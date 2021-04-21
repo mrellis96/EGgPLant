@@ -10,7 +10,7 @@ Linux OS or Mac OS
 IMPORTANT: This pipeline will download and install the needed programs (R when using EGPL or EGPLQ; NCBI Blast+, NCBI Entrez Direct and Vim when using EGDB) on both systems if it is not present. For Linux OS this will involve adding to and updating the apt list and then installing the programs so the sudoer password will be required. For Mac OS this will involve installing homebrewer if it is not already present and installing the programs through homebrewer
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-Installation:
+**Installation**:
 run <bash EGPL.Inst.sh> in the same directory as the EcoGeneticsLabPipeline tarball
 
 Manual install:
@@ -19,7 +19,7 @@ Manual install:
 <export PATH=$PATH:~/Path/To/Scripts>
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-EGPLQ - Quality Plot Generator:
+**EGPLQ** - Quality Plot Generator:
 
 1) Go to the directory where you would like to run the pipeline
 2) Esure your fastq.gz are in a subdirectory called "RawFastq' with in the current directory
@@ -30,7 +30,7 @@ EGPLQ - Quality Plot Generator:
 NOTE: <EGPLQ -h> will display the help file
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-EGPL - Main Pipeline:
+**EGPL** - Main Pipeline:
 
 1) Go to the directory where you would like to run the pipeline
 2) run:
@@ -49,7 +49,7 @@ NOTE: <EGPL -h> will display the help file
       <EGPL -c> will display the citation file	
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-EGDB - Blast DB Creator:
+**EGDB** - Blast DB Creator:
 
 1) Go to the directory where you would like to run the database created
 2)run
@@ -62,7 +62,7 @@ EGDB - Blast DB Creator:
 NOTE: <EGDB -h> will display the help file
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-Updates:
+**Updates**:
  
 V1.1: Added cancel option to Paired End Question; Changed README to .txt file; Added disclaimer; Added EGPLQ to run qPlots before Main Pipeline; Script now checks for Forward Directory, if present will skip sorting step; Fixed loop to Paired End Question; Script will now check if needed programs are installed and if not, install them. 
 V1.1.1: Bug Fixes, Script will check for reverse reads before making reverse/. 
@@ -80,5 +80,5 @@ V2.5 Added option [-n] to EGPL, Fixed bug that caused mac pipelines to error if 
 V3.0: EGPL now uses 'Cutadapt' to remove primers instead of dada2:filterAndTrim, ASV's now added to Pipeline_results.csv instead of sequences. ASV's automaticaly converted to OTU's and stored in OTU.csv.
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-#DISCLAIMER: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arrise from running this script or pipeline. Please use at own risk.
+**DISCLAIMER**: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arrise from running this script or pipeline. Please use at own risk.
 
