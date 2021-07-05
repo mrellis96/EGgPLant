@@ -5,9 +5,17 @@ EcoGenetics Lab Pipeline V4.0.1
 -------------------------------------------------------------------------------------------------------------------------------------------
 This pipeline was initially devolped by Owen Holland and then scripted by Morgan Ellis  
 For any issues please contact either of the above.  
-Requirements:  
-Linux OS or Mac OS  
-IMPORTANT: This pipeline will download and install the needed programs (R when using EGPL or EGPLQ; NCBI Blast+, NCBI Entrez Direct and Vim when using EGDB) on both systems if it is not present. For Linux OS this will involve adding to and updating the apt list and then installing the programs so the sudoer password will be required. For Mac OS this will involve installing homebrewer if it is not already present and installing the programs through homebrewer
+**Requirements:**  
+Linux OS or Mac OS
+**Dependancies**
+R  
+NCBI Blast+  
+NCBI Entrez Direct  
+CutAdapt  
+VSearch  
+
+
+**IMPORTANT**: This pipeline will download and install the needed programs (R when using EGPL or EGPLQ; NCBI Blast+, NCBI Entrez Direct and Vim when using EGDB) on both systems if it is not present. For Linux OS this will involve adding to and updating the apt list and then installing the programs so the sudoer password will be required. For Mac OS this will involve installing homebrewer if it is not already present and installing the programs through homebrewer
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **Installation**:
@@ -24,15 +32,14 @@ Manual install:
 
 The Interactive pipeline will take you through the primer removal, quality plot generation and the main pipeline. It will require user input at several steps.
 
-run `EGIP` and follow the prompts
+Run `EGIP` and follow the prompts
       
 -------------------------------------------------------------------------------------------------------------------------------------------
 **EGPLQ** - Quality Plot Generator:
 
 1) Go to the directory where you would like to run the pipeline  
 2) Esure your fastq.gz are in a subdirectory called "RawFastq' with in the current directory  
-3)run:  
-`EGPLQ -d "path/to/reads"`  
+3)Run: `EGPLQ -d "path/to/reads"`  
 -d: Directory, where the raw reads are stored - REQUIRED  
 
 NOTE: 'EGPLQ -h' will display the help file
@@ -43,8 +50,7 @@ NOTE: 'EGPLQ -h' will display the help file
 EGPL - Main Pipeline:
 
 1) Go to the directory where you would like to run the pipeline  
-2) run:  
-`EGPL -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -o []> # Replace [] with value eg: -t 120`  
+2) run: `EGPL -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -o []` (Replace [] with value eg: -t 120)  
 -d: Directory, where the raw reads are stored - REQUIRED  
 -f: Forward Primer, The sequence of the Forward Primer for Cutadapt to remove  
 -r: IF PAIRED END, The sequence of the Reverse Primer for Cutadapt to remove  
@@ -65,8 +71,7 @@ NOTE: `EGPL -h` will display the help file
 **EGDB** - Blast DB Creator:
 
 1) Go to the directory where you would like to run the database created  
-2)run  
-`EGDB -q [] -d []`  
+2) Run `EGDB -q [] -d []`  
 -q: Query, Enter the desired query to search. To get the correct syntax for the query, go to the NCBI site and perform the desired search. Then copy the query from the "Search details" box. - It is recommended to search broadly for your gene region of your marker. The query must be enclosed with quotation marks. If you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotaion marks - REQUIRED  
 -d: Database Name, The name for the database - NOTE: Spaces are not accepted. - REQUIRED  
 
