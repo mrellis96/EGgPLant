@@ -1,0 +1,85 @@
+#!/bin/bash
+#EcoGenetics Lab Pipeline - Database Creator
+echo "EcoGenetics Lab Pipeline Database Creator V4.0.1- Developed by Owen Holland and Scripted by Morgan Ellis"
+
+usage()
+{
+echo
+echo "EcoGenetics Lab Pipeline Quality Plot Generator"
+echo 
+echo "Usage: EGDB -q -d [-h]"
+echo "Example: EGDB -q 'COI[All Fields] AND Asterias amurensis [Organism]' -d 'AsteriasDB'"
+echo "Options:"
+echo "q     Query - The desired query to search. To get the correct syntax for the query, go to the NCBI site and perform the desired search. The query must be enclosed with quotation marks. If you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotaion marks"
+echo "d     Database Name- The name for the database. NOTE: Spaces are not accepted."
+echo "h     Help - Displays help readout"
+}
+
+#pass options
+while getopts ":q:d:h" opt; do
+        case $opt in
+        q) query="${OPTARG}"
+        ;;
+        d) db="$OPTARG"
+        ;;
+        h) usage
+        exit
+        ;;
+        \?) echo 
+        echo "Invalid Option"
+        usage
+        exit
+        ;;
+        esac
+done
+
+mkdir "$db"/
+
+#search for query
+
+esearch -db nucleotide -query "$query" |
+efetch -format fasta \
+> "$db"/"$db".fasta
+
+esearch -db nucleotide -query "$query" | 
+efetch -format docsum |
+xtract -pattern DocumentSummary -element AccessionVersion \
+> "$db"/"$db"acc.txt
+
+esearch -db nucleotide -query "$query" |
+efetch -format docsum |
+xtract -pattern DocumentSummary -element TaxId \
+> "$db"/"$db"taxid.txt
+
+#remove suffixes
+awk '{print $1}' "$db".fasta
+
+#Combind Files
+paste "$db"/"$db"acc.txt "$db"/"$db"taxid.txt > "$db"/"$db"taxmap.txt
+
+#Make Blast DB
+makeblastdb -in "$db"/"$db".fasta -parse_seqids -taxid_map "$db"/"$db"taxmap.txt -title "$db" -dbtype nucl -out "$db"/"$db"
+
+#Remove unnecessary files
+rm "$db"/"$db"acc.txt "$db"/"$db"taxid.txt
+
+#Export Path
+cwd=$(pwd)
+export BLASTDB="$cwd"/"$db" >& /dev/null || setenv BLASTDB "${BLASTDB}:"$cwd"/"$db""
+
+echo
+echo "***IMPORTANT***"
+echo "To use your blast db after this terminal session you must run <export BLASTDB="$cwd"/"$db"> at the start of each session"
+echo "This can also be added to your .bashrc"
+	read -p "Export path to .bashrc ? (Y/N) "
+	echo 
+	if [[ $REPLY =~ ^[Yy]$ ]]
+	then
+	export export BLASTDB="$cwd"/"$db" >& /dev/null
+	echo "export BLASTDB="$cwd"/"$db"" >> $HOME/.bashrc
+	echo "Please restart the terminal"
+	elif [[ $REPLY =~ ^[Nn]$ ]]; then
+		echo "Please remember to add this to before running blastn each session"
+	fi
+
+echo "Finished"
