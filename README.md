@@ -6,8 +6,8 @@ EcoGenetics Lab Pipeline V4.0.1
 This pipeline was initially devolped by Owen Holland and then scripted by Morgan Ellis  
 For any issues please contact either of the above.  
 **Requirements:**  
-Linux OS or Mac OS
-**Dependancies**
+Linux OS or Mac OS  
+**Dependancies**  
 R  
 NCBI Blast+  
 NCBI Entrez Direct  
@@ -24,8 +24,7 @@ run `bash EGPL.Inst.sh` in the same directory as the EcoGeneticsLabPipeline tarb
 
 Manual install:  
 1) Extract files  
-2) Go to the folder containing the script file and run:  
-`export PATH=$PATH:~/Path/To/Scripts`
+2) Go to the folder containing the script file and run: `export PATH=$PATH:~/Path/To/Scripts`
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **EGIP** - EcoGenetics Interactive Pipeline:
@@ -39,8 +38,8 @@ Run `EGIP` and follow the prompts
 
 1) Go to the directory where you would like to run the pipeline  
 2) Esure your fastq.gz are in a subdirectory called "RawFastq' with in the current directory  
-3)Run: `EGPLQ -d "path/to/reads"`  
--d: Directory, where the raw reads are stored - REQUIRED  
+3) Run: `EGPLQ -d "path/to/reads"`  
+       -d: Directory, where the raw reads are stored - REQUIRED  
 
 NOTE: 'EGPLQ -h' will display the help file
 
@@ -50,34 +49,34 @@ NOTE: 'EGPLQ -h' will display the help file
 EGPL - Main Pipeline:
 
 1) Go to the directory where you would like to run the pipeline  
-2) run: `EGPL -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -o []` (Replace [] with value eg: -t 120)  
--d: Directory, where the raw reads are stored - REQUIRED  
--f: Forward Primer, The sequence of the Forward Primer for Cutadapt to remove  
--r: IF PAIRED END, The sequence of the Reverse Primer for Cutadapt to remove  
--l: Minimum Overlap, The minimum number of basepair overlap between the Primer and the returned sequence before cutadapt will recognise the primer  
--p: Poly Tail: Removes poly tails of Base [] if there are more than >6 repeating bases in a row.  
--t: Truncate, where you would like filterAndTrim to truncate the sequences (Default= No truncation).  
--y: IF PAIRED END, where you would like filterAndTrim to truncate the reverse reads (Default=No Truncation).  
--n: Remove reads with length less than [n] BP (Default = 20).  
--m: Minimum number of reads per sequences allowed after chimera removal (Default = 10).  
--o: Cluster ASV in to OTU. ASVs will be clusteredin to OTUs based on the similarity value (0-1) (Default = No Clustering).  
+2) Run: `EGPL -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -o []` (Replace [] with value eg: -t 120)  
+       -d: Directory, where the raw reads are stored - REQUIRED  
+       -f: Forward Primer, The sequence of the Forward Primer for Cutadapt to remove  
+       -r: IF PAIRED END, The sequence of the Reverse Primer for Cutadapt to remove  
+       -l: Minimum Overlap, The minimum number of basepair overlap between the Primer and the returned sequence before cutadapt will recognise the primer  
+       -p: Poly Tail: Removes poly tails of Base [] if there are more than >6 repeating bases in a row.  
+       -t: Truncate, where you would like filterAndTrim to truncate the sequences (Default= No truncation).  
+       -y: IF PAIRED END, where you would like filterAndTrim to truncate the reverse reads (Default=No Truncation).  
+       -n: Remove reads with length less than [n] BP (Default = 20).  
+       -m: Minimum number of reads per sequences allowed after chimera removal (Default = 10).  
+       -o: Cluster ASV in to OTU. ASVs will be clusteredin to OTUs based on the similarity value (0-1) (Default = No Clustering).  
 
 3) Check number of reads after each step in terminal for optimising these variables.
 
 NOTE: `EGPL -h` will display the help file  
-      `EGPL -c` will display the citation file
+           `EGPL -c` will display the citation file
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **EGDB** - Blast DB Creator:
 
 1) Go to the directory where you would like to run the database created  
 2) Run `EGDB -q [] -d []`  
--q: Query, Enter the desired query to search. To get the correct syntax for the query, go to the NCBI site and perform the desired search. Then copy the query from the "Search details" box. - It is recommended to search broadly for your gene region of your marker. The query must be enclosed with quotation marks. If you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotaion marks - REQUIRED  
--d: Database Name, The name for the database - NOTE: Spaces are not accepted. - REQUIRED  
+       -q: Query, Enter the desired query to search. To get the correct syntax for the query, go to the NCBI site and perform the desired search. Then copy the query from the "Search details" box. - It is recommended to search broadly for your gene region of your marker. The query must be enclosed with quotation marks. If you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotaion marks - REQUIRED  
+       -d: Database Name, The name for the database - NOTE: Spaces are not accepted. - REQUIRED  
 
 3) For blast to find the database the path must be exported (eg `export BLASTDB=/path/to/database/`). This can be added to your .bashrc automaticaly by the script or run at the stat of each session. See https://www.ncbi.nlm.nih.gov/books/NBK569856/ for further information
 
-NOTE: `EGDB -h` will display the help file
+NOTE:  `EGDB -h` will display the help file
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **Updates**:
