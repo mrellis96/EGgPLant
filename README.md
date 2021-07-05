@@ -16,7 +16,7 @@ run <bash EGPL.Inst.sh> in the same directory as the EcoGeneticsLabPipeline tarb
 Manual install:
 1) Extract files
 2) Go to the folder containing the script file and run:
-<export PATH=$PATH:~/Path/To/Scripts>
+`export PATH=$PATH:~/Path/To/Scripts`
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **EGPLQ** - Quality Plot Generator:
