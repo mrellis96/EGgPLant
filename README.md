@@ -1,7 +1,7 @@
 # EGPL
 EcoGenetics Bioinformatics Pipeline
 README
-EcoGenetics Lab Pipeline V3.0
+EcoGenetics Lab Pipeline V4.0.1
 -------------------------------------------------------------------------------------------------------------------------------------------
 This pipeline was initially devolped by Owen Holland and then scripted by Morgan Ellis
 For any issues please contact either of the above.
@@ -11,7 +11,7 @@ IMPORTANT: This pipeline will download and install the needed programs (R when u
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **Installation**:
-run <bash EGPL.Inst.sh> in the same directory as the EcoGeneticsLabPipeline tarball
+run `bash EGPL.Inst.sh` in the same directory as the EcoGeneticsLabPipeline tarball
 
 Manual install:
 1) Extract files
@@ -19,47 +19,58 @@ Manual install:
 `export PATH=$PATH:~/Path/To/Scripts`
 
 -------------------------------------------------------------------------------------------------------------------------------------------
+**EGIP** - EcoGenetics Interactive Pipeline:
+The Interactive pipeline will take you through the primer removal, quality plot generation and the main pipeline. It will require user input at several steps.
+
+run 'EGIP' and follow the prompts
+      
+-------------------------------------------------------------------------------------------------------------------------------------------
 **EGPLQ** - Quality Plot Generator:
 
 1) Go to the directory where you would like to run the pipeline
 2) Esure your fastq.gz are in a subdirectory called "RawFastq' with in the current directory
 3)run:
-<EGPLQ -d [path/to/reads]>
+'EGPLQ -d "path/to/reads"'
 -d: Directory, where the raw reads are stored - REQUIRED
 
-NOTE: <EGPLQ -h> will display the help file
+NOTE: 'EGPLQ -h' will display the help file
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **EGPL** - Main Pipeline:
 
+EGPL - Main Pipeline:
+
 1) Go to the directory where you would like to run the pipeline
 2) run:
-<EGPL -d [] -f [] -r [] -l [] -n [] -m [] -o []> # Replace [] with value eg: -t 120
+`EGPL -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -o []> # Replace [] with value eg: -t 120`
 -d: Directory, where the raw reads are stored - REQUIRED
--t: Forward Primer, The sequence of the Forward Primer for Cutadapt to remove
+-f: Forward Primer, The sequence of the Forward Primer for Cutadapt to remove
 -r: IF PAIRED END, The sequence of the Reverse Primer for Cutadapt to remove
 -l: Minimum Overlap, The minimum number of basepair overlap between the Primer and the returned sequence before cutadapt will recognise the primer
+-p: Poly Tail: Removes poly tails of Base [] if there are more than >6 repeating bases in a row.
+-t: Truncate, where you would like filterAndTrim to truncate the sequences (Default= No truncation)
+-y: IF PAIRED END, where you would like filterAndTrim to truncate the reverse reads (Default=No Truncation)
 -n: Remove reads with length less than [n] BP (Default = 20)
 -m: Minimum number of reads per sequences allowed after chimera removal (Default = 10)
 -o: Cluster ASV in to OTU. ASVs will be clusteredin to OTUs based on the similarity value (0-1) (Default = No Clustering)
 
 3) Check number of reads after each step in terminal for optimising these variables.
 
-NOTE: <EGPL -h> will display the help file
-      <EGPL -c> will display the citation file	
+NOTE: `EGPL -h` will display the help file
+      `EGPL -c` will display the citation file
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **EGDB** - Blast DB Creator:
 
 1) Go to the directory where you would like to run the database created
 2)run
-<EGDB -q [] -d []>
+`EGDB -q [] -d []`
 -q: Query, Enter the desired query to search. To get the correct syntax for the query, go to the NCBI site and perform the desired search. Then copy the query from the "Search details" box. - It is recommended to search broadly for your gene region of your marker. The query must be enclosed with quotation marks. If you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotaion marks - REQUIRED
 -d: Database Name, The name for the database - NOTE: Spaces are not accepted. - REQUIRED
 
-3) For blast to find the database the path must be exported (eg <export BLASTDB=/path/to/database/>). This can be added to your .bashrc automaticaly by the script or run at the stat of each session.
+3) For blast to find the database the path must be exported (eg `export BLASTDB=/path/to/database/`). This can be added to your .bashrc automaticaly by the script or run at the stat of each session. See https://www.ncbi.nlm.nih.gov/books/NBK569856/ for further information
 
-NOTE: <EGDB -h> will display the help file
+NOTE: `EGDB -h` will display the help file
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **Updates**:
@@ -77,7 +88,10 @@ V2.3.2: Moved ubutunu version check so it no longer interferes with the installa
 V2.3.3: Fixed errors with EGPL.inst.sh.  
 V2.4: Fixed issues with R library paths, removed redundancies in EGPL, EGPLQ, EGDB created from EGPL.Inst.sh.  
 V2.5 Added option [-n] to EGPL, Fixed bug that caused mac pipelines to error if option [-o] is added, Made 10 the default for option [-m].  
-V3.0: EGPL now uses 'Cutadapt' to remove primers instead of dada2:filterAndTrim, ASV's now added to Pipeline_results.csv instead of sequences. ASV's automaticaly converted to OTU's and stored in OTU.csv.  
+V3.0: EGPL now uses 'Cutadapt' to remove primers instead of dada2:filterAndTrim, ASV's now added to Pipeline_results.csv instead of sequences. ASV's automaticaly converted to OTU's and stored in OTU.csv.  V3.1: Readded truncation to pipeline, added Poly tail remover, added vSearch citations
+V3.1.1: Fixed numerous errors preventing r from running, added "then" to cutadapt script, fixed minor erros in cutadapt script, fixed errors in README.  
+V4.0: Added Interactive Pipeline (EGIP).  
+V4.0.1: Improved the way EGIP and EGPL pass options to RScript to simplify R code and reduce chance of errors.  
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **DISCLAIMER**: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arrise from running this script or pipeline. Please use at own risk.
