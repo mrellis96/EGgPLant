@@ -331,11 +331,148 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 	awk 'BEGIN{print""}1' outputs/otu.tmp3 >outputs/otu.tmp4
 	paste outputs/site.tmp2 outputs/otu.tmp4 >outputs/otu.csv
 	rm outputs/*tmp*
-	
+	otuFa="outputs/OTU.fasta"
 	echo "OTU-ASV found in outputs/OTU-ASV.txt, OTU's added to Pipeline_Results in OTU.csv"
 else
 echo "Results found in Pipeline_Results.csv"
 fi
+echo "Do you want to Blast your FASTA file using this pipeline? (Y/N/C) "
+read
+if [[ $REPLY =~ ^[Nn]$ ]]; then
+	echo "Thank You for using the EcoGenetics Lab Interactive Pipeline"
+	exit
+elif [[ $REPLY =~ ^[Cc]$ ]]; then
+	exit
+fi
 
-echo "Thank You for using the EcoGenetics Lab Interactive Pipeline"
+echo "Do you need to create a local database using an NCBI search query? (Y/N/C)"
+read
+if [[ $REPLY =~ ^[Cc]$ ]];then
+	exit
+elif [[ $REPLY =~^[Yy]$ ]];then
+	echo "Please enter a name for your database. NOTE: Spaces are not accepted."
+	read dbName
+#echo "Please enter path where you would like your DB saved
+#Possible add something like read dbPath
+#				  read dbPath
+#				  if [ dbPath="" ]; then
+#				  mkdir ~/Blastdb/$dbName -p <-p to make parent dir>
+#				  dbPath=" ~/Blastdb/$dbName"
 
+	echo "To get the correct syntax for the query, go to the NCBI site and perform the desired search. The query must be enclosed with quotation marks. If you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotaion marks"
+	echo "Please enter your query"
+	read dbQuery
+	mkdir "$dbName"/
+	#search for query
+	esearch -db nucleotide -query "$dbQuery" |
+	efetch -format fasta \
+	> "$dbName"/"$dbName".fasta
+
+	esearch -db nucleotide -query "$dbQuery" |
+	efetch -format docsum |
+	xtract -pattern DocumentSummary -element AccessionVersion \
+	> "$dbName"/"$dbName"acc.txt
+
+	esearch -db nucleotide -query "$dbQuery" |
+	efetch -format docsum |
+	xtract -pattern DocumentSummary -element TaxId \
+	> "$dbName"/"$dbName"taxid.txt
+
+	#remove suffixes
+	awk '{print $1}' "$dbName".fasta
+
+	#Combind Files
+	paste "$dbName"/"$dbName"acc.txt "$dbName"/"$dbName"taxid.txt > "$dbName"/"$dbName"taxmap.txt
+
+	#Make Blast DB
+	makeblastdb -in "$dbName"/"$dbName".fasta -parse_seqids -taxid_map "$dbName"/"$dbName"taxmap.txt -title "$dbName" -dbtype nucl -out "$dbName"/"$dbName"
+
+	#Remove unnecessary files
+	rm "$dbName"/"$dbName"acc.txt "$dbName"/"$dbName"taxid.txt
+
+	#Export Path
+	cwd=$(pwd)
+	export BLASTDB="$cwd"/"$dbName" >& /dev/null || setenv BLASTDB "${BLASTDB}:"$cwd"/"$dbName""
+
+	echo
+	echo "***IMPORTANT***"
+	echo "To use your blast db after this terminal session you must run <export BLASTDB="$cwd"/"$dbName"> at the start of each session"
+	echo "This can also be added to your .bashrc"
+        read -p "Export path to .bashrc ? (Y/N) "
+        echo
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		export export BLASTDB="$cwd"/"$dbName" >& /dev/null
+		echo "export BLASTDB="$cwd"/"$dbName"" >> $HOME/.bashrc
+	elif [[ $REPLY =~ ^[Nn]$ ]]; then
+                echo "Please remember to add this to before running blastn each session"
+        fi
+fi
+if [[ $otuFa == '' ]]; then
+	otuFa="outputs/*.fa"
+fi
+if [[ $dbName == '' ]]; then
+	echo "Is the Database Local or Remote? (L/R/C)"
+	read dbLoc
+	if [[ $dbLoc == 'C' ]]; then
+		exit
+	elif [[ $dbLoc == 'L' ]]; then
+		echo "What is the Database name?"
+		read dbName
+		echo "What min Perc ID (0-100 OR Enter for no Min Perc ID)"
+		read percID
+		echo "How Many Threads?"
+		read blaThr
+		if [[ $percID == '' ]]; then
+			blastn -db "$dbName" \
+			-query "$otuFa" \
+			-num_threads "$blaThr" \
+			-out blast.out
+		else
+			blastn -db "$dbName" \
+	                -query "$otuFa" \
+        	        -perc_identity "$percID" \
+			-num_threads "$blaThr" \
+			-out blast.out
+		fi
+        elif [[ $dbLoc == 'R' ]]; then
+		echo "What is the Database name?"
+                read dbName
+                echo "What min Perc ID (0-100 OR Enter for no Min Perc ID)"
+                read percID
+                echo "How Many Threads?"
+                read blaThr
+                if [[ $percID == '' ]]; then
+                        blastn -db "$dbName" \
+                        -query "$otuFa" \
+                        -num_threads "$blaThr" \
+                        -out blast.out \
+			-remote
+                else
+                        blastn -db "$dbName" \
+                        -query "$otuFa" \
+                        -perc_identity "$percID" \
+                        -num_threads "$blaThr" \
+                        -out blast.out \
+			-remote
+                fi
+	fi
+else
+	echo "What min Perc ID (0-100 OR Enter for no Min Perc ID)"
+        read percID
+        echo "How Many Threads?"
+        read blaThr
+        if [[ $percID == '' ]]; then
+        	blastn -db "$dbName" \
+                -query "$otuFa" \
+                -num_threads "$blaThr" \
+                -out blast.out
+	else
+        	blastn -db "$dbName" \
+                -query "$otuFa" \
+                -perc_identity "$percID" \
+                -num_threads "$blaThr" \
+                -out blast.out
+	fi
+fi
+echo "your Blast results are in outputs/blast.out, ready for entry in to MEGAN or simmilar taxanomical assignment software"
+echo "Thank you for using EcoGenetics Interactive Pipeline"
