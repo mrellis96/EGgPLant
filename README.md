@@ -98,6 +98,7 @@ V3.0: EGPL now uses 'Cutadapt' to remove primers instead of dada2:filterAndTrim,
 V3.1.1: Fixed numerous errors preventing r from running, added "then" to cutadapt script, fixed minor erros in cutadapt script, fixed errors in README.  
 V4.0: Added Interactive Pipeline (EGIP).  
 V4.0.1: Improved the way EGIP and EGPL pass options to RScript to simplify R code and reduce chance of errors.  
+V4.1: Added EGDB and BlastN to EGIP, R now outputs fasta file as 'Results.fa'.  
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **DISCLAIMER**: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arrise from running this script or pipeline. Please use at own risk.
