@@ -1,5 +1,5 @@
 #!/usr/local/bin/Rscript
-# EcoGenetics pipeline Single End Reads - V4.0.1 - Mac OS
+# EcoGenetics pipeline Single End Reads - V4.1 - Mac OS
 cat("EcoGenetics Pipeline for Single End Reads\n")
 
 Sys.setenv(R_INSTALL_STAGED = FALSE) 
@@ -107,7 +107,8 @@ cat("Writing fasta file\n")
 
 x <- char2dna(colnames(seqtab.nochim))
 names(x) <- paste0("ASV", seq_along(x))
-fas <- tempfile(fileext = ".fa", tmpdir = "outputs/")
-writeFASTA(x, fas)
+#fas <- tempfile(fileext = ".fa", tmpdir = "outputs/")
+writeFASTA(x, "outputs/Results.fa")
+
 
 cat("Finished\n")

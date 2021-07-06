@@ -1,6 +1,6 @@
 #!/bin/bash
 # EcoGenetics Pipeline
-echo "EcoGenetics Lab Pipeline V4.0.1 - Developed by Owen Holland and Scripted by Morgan Ellis"
+echo "EcoGenetics Lab Pipeline V4.1 - Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {
@@ -42,7 +42,7 @@ echo "vSearch"
 echo "Rognes, T., Flouri, T., Nichols, B., Quince, C. and Mahé, F., 2016. VSEARCH: a versatile open source tool for metagenomics. PeerJ, 4, p.e2584."
 } 
 
-while getopts ":d:f:r:p:t:y:l:n:m:o:c h" opt; do
+while getopts ":d:f:r:p:t:y:l:n:m:o:c h s" opt; do
         case $opt in
         d) raw="${OPTARG}"
         ;;
@@ -70,6 +70,9 @@ while getopts ":d:f:r:p:t:y:l:n:m:o:c h" opt; do
         h) usage
         exit
         ;;
+	s) cat /usr/bin/.EGS
+	exit
+	;;
         \?) echo 
         echo "Invalid Option"
         usage
