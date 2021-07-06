@@ -1,7 +1,7 @@
 # EGPL
 EcoGenetics Bioinformatics Pipeline
 README
-EcoGenetics Lab Pipeline V4.0.1
+EcoGenetics Lab Pipeline V4.1
 -------------------------------------------------------------------------------------------------------------------------------------------
 This pipeline was initially devolped by Owen Holland and then scripted by Morgan Ellis  
 For any issues please contact either of the above.  
