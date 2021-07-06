@@ -1,5 +1,5 @@
 #!/bin/bash
-#EcoGenetics Pipeline install Scrip V4.0.1
+#EcoGenetics Pipeline install Scrip V4.1
 echo "Thank you for choosing EcoGeneticsPipeline"
 echo "The pipeline will now be installed including all programs such as R, Vim, NCBI-Blast etc."
 read -p "Do you want to continue? (Y/N/C) "
