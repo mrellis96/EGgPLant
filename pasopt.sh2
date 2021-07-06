@@ -1,0 +1,10 @@
+#!/bin/bash
+
+while getopts ":l:" opt; do
+        case $opt in
+        l) raw="${OPTARG}"
+        ;;
+esac
+done
+echo "$raw"
+
