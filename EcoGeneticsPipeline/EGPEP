@@ -110,7 +110,7 @@ cat("Writing Fasta File\n")
 
 x <- char2dna(colnames(seqtab.nochim))
 names(x) <- paste0("ASV", seq_along(x))
-fas <- tempfile(fileext = ".fa", tmpdir = "outputs/")
-writeFASTA(x, fas)
+#fas <- tempfile(fileext = ".fa", tmpdir = "outputs/")
+writeFASTA(x, "outputs/Results.fa")
 
 cat("Finished\n")
