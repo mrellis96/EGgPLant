@@ -13,11 +13,12 @@ if [[ "$(uname)" == "Linux" ]];
 	echo "Installing scripts (Linux OS)"
 	if [ -f "/usr/bin/EGPL" ]
 		then
-		sudo rm /usr/bin/EGIP /usr/bin/EGPL /usr/bin/EGPLQ /usr/bin/EGDB /usr/bin/EGPEP /usr/bin/EGSEP /usr/bin/EGPEPQ /usr/bin/EGSEPQ
+		sudo rm /usr/bin/EGIP /usr/bin/EGPL /usr/bin/EGPLQ /usr/bin/EGDB /usr/bin/EGPEP /usr/bin/EGSEP /usr/bin/EGPEPQ /usr/bin/EGSEPQ 
+		sudo rm /usr/bin/.EGS -f
 	fi
 	cd EcoGeneticsPipeline/
-	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP
-	sudo mv EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP /usr/bin
+	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
+	sudo mv EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS /usr/bin
 	sudo mv EGPL_README.txt ../
 	cd $cwd
 	sudo rm -r EcoGeneticsPipeline/
@@ -153,10 +154,11 @@ elif [[ "$(uname)" == "Darwin" ]];
 	if [ -f "/usr/local/bin/EGPL" ]
 		then
 		sudo rm /usr/local/bin/EGIP /usr/local/bin/EGPL /usr/bin/local/EGPLQ /usr/local/bin/EGDB /usr/local/bin/EGPEPM /usr/local/bin/EGSEPM /usr/local/bin/EGPEPQM /usr/local/bin/EGSEPQM
+		sudo rm /usr/local/bin/.EGS -f
 	fi
 	cd EcoGeneticsPipeline/
-	chmod 777 EGPL EGPLQ EGDB EGPEPM GSEPM EGPEPQM EGSEPQM EGIP
-	sudo mv EGPL EGPLQ EGDB EGPEPM EGSEPM EGSEPQM EGPEPQM EGIP /usr/local/bin
+	chmod 777 EGPL EGPLQ EGDB EGPEPM GSEPM EGPEPQM EGSEPQM EGIP .EGS
+	sudo mv EGPL EGPLQ EGDB EGPEPM EGSEPM EGSEPQM EGPEPQM EGIP .EGS /usr/local/bin
 	sudo mv EGPL_README.txt ../
 	cd $cwd
 	sudo rm -r EcoGeneticsPipeline/

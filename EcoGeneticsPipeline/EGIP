@@ -1,6 +1,6 @@
 #!/bin/bash
 # EcoGenetics Pipeline Interactive
-echo "EcoGenetics Lab Interactive Pipeline V4.0.1 - Developed by Owen Holland and Scripted by Morgan Ellis"
+echo "EcoGenetics Lab Interactive Pipeline V4.1 - Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {
@@ -28,7 +28,7 @@ echo "vSearch"
 echo "Rognes, T., Flouri, T., Nichols, B., Quince, C. and Mahé, F., 2016. VSEARCH: a versatile open source tool for metagenomics. PeerJ, 4, p.e2584."
 } 
 
-while getopts "c h" opt; do
+while getopts "c h s" opt; do
         case $opt in
         c) citation
         exit
@@ -36,6 +36,9 @@ while getopts "c h" opt; do
         h) usage
         exit
         ;;
+	s) cat /usr/bin/.EGS
+	exit
+	;;
         \?) echo 
         echo "Invalid Option"
         usage
@@ -349,7 +352,7 @@ echo "Do you need to create a local database using an NCBI search query? (Y/N/C)
 read
 if [[ $REPLY =~ ^[Cc]$ ]];then
 	exit
-elif [[ $REPLY =~^[Yy]$ ]];then
+elif [[ $REPLY =~ ^[Yy]$ ]];then
 	echo "Please enter a name for your database. NOTE: Spaces are not accepted."
 	read dbName
 #echo "Please enter path where you would like your DB saved

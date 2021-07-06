@@ -1,6 +1,6 @@
 #!/bin/bash
 # EcoGenetics Pipeline Quality Plot
-echo "EcoGenetics Lab Pipeline Quality Plot V4.0.1- Developed by Owen Holland and Scripted by Morgan Ellis"
+echo "EcoGenetics Lab Pipeline Quality Plot V4.1- Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {
@@ -14,13 +14,16 @@ echo "d     Directory - Directory where the raw reads are stored"
 echo "h     Help - Displays help readout"
 }
 
-while getopts ":d:h" opt; do
+while getopts ":d:h s" opt; do
         case $opt in
         d) raw="${OPTARG}"
         ;;
         h) usage
         exit
         ;;
+	s) cat /usr/bin/.EGS
+	exit
+	;;
         \?) echo 
         echo "Invalid Option"
         usage

@@ -1,6 +1,6 @@
 #!/bin/bash
 #EcoGenetics Lab Pipeline - Database Creator
-echo "EcoGenetics Lab Pipeline Database Creator V4.0.1- Developed by Owen Holland and Scripted by Morgan Ellis"
+echo "EcoGenetics Lab Pipeline Database Creator V4.1 Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {
@@ -16,7 +16,7 @@ echo "h     Help - Displays help readout"
 }
 
 #pass options
-while getopts ":q:d:h" opt; do
+while getopts ":q:d:h s" opt; do
         case $opt in
         q) query="${OPTARG}"
         ;;
@@ -25,6 +25,9 @@ while getopts ":q:d:h" opt; do
         h) usage
         exit
         ;;
+	s) cat /usr/bin/.EGS
+	exit
+	;;
         \?) echo 
         echo "Invalid Option"
         usage
