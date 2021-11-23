@@ -1,0 +1,267 @@
+#!/bin/bash
+# EGgPLant
+echo "EGgPLant V4.1.1 - Developed by Owen Holland and Scripted by Morgan Ellis"
+
+usage()
+{
+echo
+echo "EcoGenetics Lab Pipeline for Demupltiplexing Sequences"
+echo 
+echo "Usage: EGPL -d [-f] [-r] [-l] [-p] [-t] [-y] [-n] [-m] [-o] [-c] [-h]"
+echo "Example: EGPL -d RawFastq -f ATCG -r CTAG -p G -t 280 -y 250 -l 10 -m 10 -o 0.99"
+echo "Options:"
+echo "d     Directory - The Directory where the raw reads are stored"
+echo "f     Forward Primer - The sequence of the Forward Primer for Cutadapt to remove"
+echo "r     Reverse Primer - The sequence of the Reverse Primer for Cutadapt to remove"
+echo "l     Minimum Overlap - The minimum number of basepair overlap between the Primer and the returned sequence before cutadapt will recognise the primer"
+echo "p     Poly Tails - Tells Cutadapt to remove ploy tails. Add letter for basepair to remove"
+echo "t     Truncate - Where you would like filterAndTrim to truncate the sequences (Default= No truncation). Must be positive interger"
+echo "y     Truncate Reverse Read - IF PAIRED END, where you would like filterAndTrim to truncate the reverse reads (Default=No Truncation). Must be positive interger"
+echo "n     Minimum Read Length - Remove reads with length less than [n] (Default=20)"
+echo "m     Minimum Number of Reads - Minimum number of reads per sequences allowed after chimera removal (Default 10). Must be positive interger"
+echo "o     Cluster ASV in to OTUs based on similarity (0-1) (Default = No Clustering)"
+echo "c     Citations - Citations from the various programs/packages used"
+echo "h     Help - Displays help readout"
+}
+
+citation()
+{ 
+echo
+echo "Citations"
+echo
+echo "Cutadapt"
+echo "Martin M (2011) Cutadapt removes adapter sequences from high-throughput sequencing reads. EMBnet journal 17:10-12"
+echo
+echo "R base"
+echo "R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/."
+echo
+echo "dada2"
+echo "Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJA, Holmes SP (2016). “DADA2: High-resolution sample inference from Illumina amplicon data.” Nature Methods, 13, 581-583. doi: 10.1038/nmeth.3869 (URL: https://doi.org/10.1038/nmeth.3869)."
+echo
+echo "vSearch"
+echo "Rognes, T., Flouri, T., Nichols, B., Quince, C. and Mahé, F., 2016. VSEARCH: a versatile open source tool for metagenomics. PeerJ, 4, p.e2584."
+} 
+
+while getopts ":d:f:r:p:t:y:l:n:m:o:c h s" opt; do
+        case $opt in
+        d) raw="${OPTARG}"
+        ;;
+        f) fwdp="${OPTARG}"
+        ;;
+        r) revp="${OPTARG}"
+        ;;
+        p) poly="${OPTARG}"
+        ;;
+        t) fwdT="${OPTARG}"
+        ;;
+        y) revT="${OPTARG}"
+        ;;
+        l) minO="${OPTARG}"
+        ;;
+        n) minS="${OPTARG}"
+        ;;
+        m) minR="${OPTARG}"
+        ;;
+        o) otu="${OPTARG}"
+        ;;
+        c) citation
+        exit
+        ;;
+        h) usage
+        exit
+        ;;
+	s) cat /usr/bin/.EGS
+	exit
+	;;
+        \?) echo 
+        echo "Invalid Option"
+        usage
+        exit
+        ;;
+        esac
+done
+
+which R &> /dev/null
+     	
+if [ $? -ne 0 ]
+	then
+	echo "R not found. Please install R or run EGPL install script (EGPL.Inst.sh) before continuing"
+	exit
+fi
+	
+#Check if raw Dir exists
+if [ ! -d "$raw" ]
+	then
+	echo "ERROR: Directory '$raw' Does Not Exist"
+	exit
+fi
+
+if [ ! -d "outputs/" ]
+	then
+	mkdir outputs/
+fi
+#poly tails
+if  [ ! $poly == "" ]
+	then
+	mkdir "$raw"_Poly/
+	cd $raw
+	for i in *.fastq.gz; 
+	do SAMPLE=$(echo ${i} | sed "s/.fastq\.gz//") ; 
+	cutadapt -j 8 -O 6 -g "$poly""$poly""$poly""$poly""$poly""$poly" -o ../"$raw"_Poly/${SAMPLE}.fastq.gz ${SAMPLE}.fastq.gz;
+	done |& tee ../outputs/cutadapt.log.txt
+	cd ../
+	raw=""$raw"_Poly"	
+fi
+
+
+# Remove Primers
+
+if [ ! $fwdp == "" ]
+	then
+	if  [ ! $revp == "" ]
+		then #Paired
+		mkdir "$raw"_Trimmed/
+		cd $raw
+		for i in *_R1_001.fastq.gz; 
+		do SAMPLE=$(echo ${i} | sed "s/_R1_\001\.fastq\.gz//") ; 
+		cutadapt -j 8 -m 90 -O 10 -g "$fwdp" -G "$revp" --trimmed-only -o ../"$raw"_Trimmed/${SAMPLE}_R1_001.fastq.gz -p ../"$raw"_Trimmed/${SAMPLE}_R2_001.fastq.gz ${SAMPLE}_R1_001.fastq.gz ${SAMPLE}_R2_001.fastq.gz;
+		done |& tee -a ../outputs/cutadapt.log.txt
+		cd ../
+		raw=""$raw"_PrimerTrimmed"
+	else #Single
+	mkdir "$raw"_Trimmed/
+	cd $raw
+	for i in *_R1_001.fastq.gz; 
+	do SAMPLE=$(echo ${i} | sed "s/_R1_\001\.fastq\.gz//") ; 
+	cutadapt -j 8 -m 90 -O 10 -g "$fwdp" --trimmed-only -o ../"$raw"_Trimmed/${SAMPLE}_R1_001.fastq.gz ${SAMPLE}_R1_001.fastq.gz;
+	done |& tee -a ../outputs/cutadapt.log.txt
+	cd ../
+	raw=""$raw"_Trimmed"	
+	fi	
+fi
+
+#Check if "forward" directory exists, if present skip sorting step
+if [ ! -d "forward/" ]
+	then #sorting step
+	mkdir forward
+	cp "$raw"/*R1_001.fastq.gz forward/
+		count=`ls  -1 "$raw"/*R2_001.fastq.gz 2>/dev/null | wc -l` ; 
+		if [ $count != 0 ] #checks if Rawfastq has reverse reads
+			then
+			mkdir reverse
+			cp "$raw"/*R2_001.fastq.gz reverse/
+		fi
+fi
+
+
+#Checks if seqs are paired ends and run relevant script
+if [[ "$(uname)" == "Linux" ]];
+	then
+	read -p "Are the sequences PAIRED END READS (Y/N/C)?"
+	echo    # (optional) move to a new line
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		EGPEP --fwdT $fwdT --revT $revT --minR $minR |& tee -a outputs/R.log.txt
+	elif [[ $REPLY =~ ^[Nn]$ ]]; then
+		EGSEP --fwdT $fwdT --minR $minR |& tee -a outputs/R.log.txt
+	elif [[ $REPLY =~ ^[Cc]$ ]]; then
+		exit
+	fi
+elif [[ "$(uname)" == "Darwin" ]];
+	then
+	read -p "Are the sequences PAIRED END READS (Y/N/C)?"
+	echo    # (optional) move to a new line
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		EGPEPM --fwdT $fwdT --revT $revT --minR $minR |& tee -a outputs/R.log.txt
+	elif [[ $REPLY =~ ^[Nn]$ ]]; then
+		EGSEPM --fwdT $fwdT --minR $minR |& tee -a outputs/R.log.txt
+	elif [[ $REPLY =~ ^[Cc]$ ]]; then
+		exit
+	fi
+fi
+
+if [[ ! -f "outputs/Pipeline_Results.csv" ]];
+	then
+	echo 
+	echo "ERROR"
+	echo "Check R output above and try again"
+	exit
+fi
+#copy and remove site names
+awk -F"," 'FNR == 1 { print }' outputs/Pipeline_Results.csv >outputs/site.tmp
+tail -n +2 outputs/Pipeline_Results.csv > outputs/pipe.tmp
+#relabel as ASV1-ASVN
+awk -F"," '{ print "ASV"NR",", $0}' outputs/pipe.tmp >outputs/pipe.tmp2
+#remove Sequence
+cut --complement -d',' -f2 outputs/pipe.tmp2 >outputs/pipe.tmp3
+#add empty row
+awk 'BEGIN{ print""}1' outputs/pipe.tmp3 >outputs/pipe.tmp4
+#Paste all files together
+paste outputs/site.tmp outputs/pipe.tmp4 >outputs/Pipeline_Results.csv
+rm outputs/site.tmp outputs/pipe.tmp outputs/pipe.tmp2 outputs/pipe.tmp3 outputs/pipe.tmp4
+
+
+if [ $otu > 0 ]
+	then
+	vsearch --cluster_size outputs/*.fa \
+	--id "$otu" \
+	--strand plus \
+	--sizein \
+	--sizeout \
+	--fasta_width 0 \
+	--relabel OTU_ \
+	--centroids outputs/OTU.fasta \
+	--otutabout outputs/OTU.txt \
+	
+	#Relabel OTU and ASV
+	totcol=`head -1 outputs/OTU.txt | awk -F"\t" '{print NF}'`
+	awk -F"\t" '{print $1}' outputs/OTU.txt > outputs/OTU.tmp
+
+	for ((i=2;i<=$totcol;i++))
+	do
+	ID=`awk -F"\t" -v var="$i" '{print $(var)}' outputs/OTU.txt | head -1`
+	OTU=`awk -F"\t" -v var="$i" '{if ($(var) == "1") print $1}' outputs/OTU.txt | perl -pe 's/\n/_/g' | perl -pe 's/_$//g'`
+	awk -F"\t" -v var="$i" '{print $(var)}' outputs/OTU.txt | perl -pe "s/$ID/$ID\n$OTU/g" > outputs/OTU.tmp2
+	paste outputs/OTU.tmp outputs/OTU.tmp2 > outputs/OTU.tmp3
+	mv outputs/OTU.tmp3 outputs/OTU.tmp
+	rm outputs/OTU.tmp2
+	done
+	cut -f2- outputs/OTU.tmp > outputs/OTU.tmp2
+	head -2 outputs/OTU.tmp2 > outputs/OTU.tmp3
+	mv outputs/OTU.tmp3 outputs/OTU.tmp
+	rm outputs/OTU.tmp2
+	#Transpose
+	awk '
+	{
+	    for (i=1; i<=NF; i++)  {
+	        a[NR,i] = $i
+	    }
+	}
+	NF>p { p = NF }
+	END {
+	    for(j=1; j<=p; j++) {
+	        str=a[1,j]
+	        for(i=2; i<=NR; i++){
+	            str=str" "a[i,j];
+ 	       }
+        print str
+	    }
+	}' outputs/OTU.tmp > outputs/OTU.ASV.txt
+	rm outputs/OTU.tmp
+	#Copy and remove site names
+	awk -F"," 'FNR == 1 { print }' outputs/Pipeline_Results.csv >outputs/site.tmp
+	awk -F"," '{ print "," $0}' outputs/site.tmp >outputs/site.tmp2
+	tail -n +2 outputs/Pipeline_Results.csv > outputs/pipe.tmp
+	#sort asvoutput (other file) by ASV (ASV1,ASV2...ASV10)
+	sort -V outputs/OTU.ASV.txt >outputs/otu.tmp
+	#Remove ASV
+	awk '{print $2}' outputs/otu.tmp >outputs/otu.tmp2
+	#Add empty row and column
+	awk -F"," '{ print "," $0}' outputs/pipe.tmp >outputs/pipe.tmp2
+	#Paste all files together
+	paste outputs/otu.tmp2 outputs/pipe.tmp2 >outputs/otu.tmp3
+	awk 'BEGIN{print""}1' outputs/otu.tmp3 >outputs/otu.tmp4
+	paste outputs/site.tmp2 outputs/otu.tmp4 >outputs/otu.csv
+	rm outputs/*tmp*
+	
+	echo "OTU-ASV found in outputs/OTU-ASV.txt, OTU's added to Pipeline_Results in OTU.csv"
+fi

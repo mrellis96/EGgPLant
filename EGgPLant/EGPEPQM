@@ -1,0 +1,40 @@
+#!/usr/local/bin/Rscript
+#EGgPLant Paired End Reads Quality Plot - V4.1.1 - Mac OS
+cat("EGgPLant Quality Plot Generator for Paired End Reads\n")
+
+Sys.setenv(R_INSTALL_STAGED = FALSE)
+
+cat("Setting Repository\n")
+r = getOption("repos") 
+r["CRAN"] = "http://cran.csiro.au/"
+options(repos = r)
+rm(r)
+cat("Loading Packages\n")
+if(!("devtools" %in% list.files(.libPaths()))) install.packages("devtools")
+if(!("insect" %in% list.files(.libPaths()))) devtools::install_github("shaunpwilkinson/insect")
+if(!("BiocManager" %in% list.files(.libPaths()))) install.packages("BiocManager")
+if(!("dada2" %in% list.files(.libPaths()))) BiocManager::install("dada2")
+library(insect)
+library(dada2)
+
+cat("Assinging Pathways\n")
+
+pathF <- "forward/" 
+pathR <- "reverse/" 
+
+cat("Generating Quality Plots\n")
+
+QplotF <- sort(list.files(pathF, pattern="fastq.gz", full.names = TRUE))
+QplotR <- sort(list.files(pathR, pattern="fastq.gz", full.names = TRUE))
+
+cat("If you get two messages below saying null device 1, success!\nCheck the outputs directory for the quality plots.\n")
+
+tiff('outputs/qPlot_fwd.tiff', units="in", width=8, height=6, res=600, compression = 'lzw')
+plotQualityProfile(QplotF, aggregate = TRUE)
+dev.off()
+
+tiff('outputs/qPlot_rev.tiff', units="in", width=8, height=6, res=600, compression = 'lzw')
+plotQualityProfile(QplotR, aggregate = TRUE)
+dev.off()
+
+cat("Finished\n")

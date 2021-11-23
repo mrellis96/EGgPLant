@@ -1,0 +1,115 @@
+#!/usr/local/bin/Rscript
+#EGgPLant Paired End Reads - V4.1.1 - Mac OS
+cat("EGgPLant for Paired End Reads\n")
+
+Sys.setenv(R_INSTALL_STAGED = FALSE) 
+
+cat("Setting Repository\n")
+r = getOption("repos") 
+r["CRAN"] = "http://cran.csiro.au/"
+options(repos = r)
+rm(r)
+
+cat("Loading Packages\n")
+if(!("optparse" %in% list.files(.libPaths()))) install.packages("optparse")
+suppressPackageStartupMessages(require(optparse))
+
+option_list <- list( 
+	make_option(c("-t", "--fwdT"), action="store", default=0, type="character", help="truncate"),
+    	make_option(c("-y", "--revT"), action="store", default=0, type="character", help="truncate"),
+    	make_option(c("-m", "--minR"), action="store", default=10, type='character', help="minimum number of reads permissible")
+    opt = parse_args(OptionParser(option_list=option_list))
+
+
+opt$m<-as.numeric(opt$minR)
+opt$t<-as.numeric(opt$fwdT)
+opt$y<-as.numeric(opt$revT)
+
+if(!("latticeExtra" %in% list.files(.libPaths()))) install.packages("latticeExtra")
+if(!("devtools" %in% list.files(.libPaths()))) install.packages("devtools")
+if(!("insect" %in% list.files(.libPaths()))) devtools::install_github("shaunpwilkinson/insect")
+if(!("BiocManager" %in% list.files(.libPaths()))) install.packages("BiocManager")
+if(!("dada2" %in% list.files(.libPaths()))) BiocManager::install("dada2")
+library(insect)
+library(dada2)
+
+cat("Assigning Pathways\n")
+pathF <- "forward/" 
+pathR <- "reverse/" 
+
+filtpathF <- file.path(pathF, "filtered") # Filtered forward files go into the pathF/filtered/ subdirectory
+filtpathR <- file.path(pathR, "filtered") # ...
+# Identifies your forward reads
+fastqFs <- sort(list.files(pathF, pattern="fastq.gz"))
+# Identifies your reverese reads
+fastqRs <- sort(list.files(pathR, pattern="fastq.gz"))
+
+cat("Trimming and Filtering Sequences\n")
+
+out <- filterAndTrim(fwd=file.path(pathF, fastqFs), filt=file.path(filtpathF, fastqFs), rev=file.path(pathR, fastqRs), filt.rev=file.path(filtpathR, fastqRs), truncLen=c(opt$t,opt$y),maxEE=c(2,5), truncQ=2, maxN=0, rm.phix=TRUE, compress=TRUE, verbose=TRUE, multithread=FALSE)
+
+head(out)
+
+filtFs <- list.files(filtpathF, pattern="fastq.gz", full.names = TRUE)
+filtRs <- list.files(filtpathR, pattern="fastq.gz", full.names = TRUE)
+sample.names <- sapply(strsplit(basename(filtFs), "_"), `[`, 1) # Assumes filename = samplename_XXX.fastq.gz
+sample.namesR <- sapply(strsplit(basename(filtRs), "_"), `[`, 1) # Assumes filename = samplename_XXX.fastq.gz
+names(filtFs) <- sample.names
+names(filtRs) <- sample.names
+
+cat("Learning Error Rates\n")
+errF <- learnErrors(filtFs, nbases=1e8, multithread=TRUE, verbose = TRUE)
+errR <- learnErrors(filtRs, nbases=1e8, multithread=TRUE, verbose = TRUE)
+
+mergers <- vector("list", length(sample.names))
+names(mergers) <- sample.names
+
+cat("Dereplicating and Merging\n")
+for(sam in sample.names) {
+  cat("Processing:", sam, "\n")
+  derepF <- derepFastq(filtFs[[sam]], verbose = TRUE)
+  ddF <- dada(derepF, err=errF, multithread=TRUE, verbose = TRUE)
+  derepR <- derepFastq(filtRs[[sam]], verbose = TRUE)
+  ddR <- dada(derepR, err=errR, multithread=TRUE, verbose = TRUE)
+  merger <- mergePairs(ddF, derepF, ddR, derepR, verbose = TRUE)
+  mergers[[sam]] <- merger
+}
+
+rm(derepF); rm(derepR)
+
+cat("Making Sequence Table\n")
+seqtab <- makeSequenceTable(mergers)
+
+cat("Number of Samples and ASVs\n")
+table(nchar(getSequences(seqtab)))
+
+cat("Chimera Removal\n")
+
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=FALSE, verbose=TRUE)
+
+cat("Number of Samples and ASVs Remaining\n")
+
+dim(seqtab.nochim)
+cat("Proportion of Reads Removed\n")
+sum(seqtab.nochim)/sum(seqtab)
+
+rownames(seqtab.nochim) <- sub("_R1$", "", rownames(seqtab.nochim))
+
+cat("Setting Minimum number of reads\n")
+
+colsums <- apply(seqtab.nochim, 2, sum)
+discards <- colsums < 10
+seqtab.nochim <- seqtab.nochim[, !discards]
+
+cat("Writing CSV\n")
+trans.seqtab <-t(seqtab.nochim)
+write.csv(trans.seqtab, file = "outputs/Pipeline_Results.csv", row.names = TRUE)
+
+cat("Writing Fasta File\n")
+
+x <- char2dna(colnames(seqtab.nochim))
+names(x) <- paste0("ASV", seq_along(x))
+#fas <- tempfile(fileext = ".fa", tmpdir = "outputs/")
+writeFASTA(x, "outputs/Results.fa")
+
+cat("Finished\n")
