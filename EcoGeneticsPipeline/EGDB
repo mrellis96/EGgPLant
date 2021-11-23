@@ -1,6 +1,6 @@
 #!/bin/bash
-#EcoGenetics Lab Pipeline - Database Creator
-echo "EcoGenetics Lab Pipeline Database Creator V4.1 Developed by Owen Holland and Scripted by Morgan Ellis"
+#EGgPLant - Database Creator
+echo "EGgPLant Database Creator V4.1.1 Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {

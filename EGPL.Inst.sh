@@ -1,6 +1,6 @@
 #!/bin/bash
-#EcoGenetics Pipeline install Scrip V4.1
-echo "Thank you for choosing EcoGeneticsPipeline"
+#EGgPLant install Scrip V4.1.1
+echo "Thank you for choosing EGgPLant"
 echo "The pipeline will now be installed including all programs such as R, Vim, NCBI-Blast etc."
 read -p "Do you want to continue? (Y/N/C) "
 echo    # (optional) move to a new line
@@ -245,5 +245,5 @@ elif [[ "$(uname)" == "Darwin" ]];
         	echo    "Installed"
 	fi
 fi
-echo "The pipeline and all dependacies are now installed"
+echo "EGgPLant and all dependacies are now installed"
 echo "Please read the readme (EGPL_README.txt) found in the found in "$cwd" before use"

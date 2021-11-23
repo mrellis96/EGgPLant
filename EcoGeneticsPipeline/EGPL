@@ -1,6 +1,6 @@
 #!/bin/bash
-# EcoGenetics Pipeline
-echo "EcoGenetics Lab Pipeline V4.1 - Developed by Owen Holland and Scripted by Morgan Ellis"
+# EGgPLant
+echo "EGgPLant V4.1.1 - Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {

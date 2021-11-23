@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript
-#EcoGenetics Pipeline Paired End Reads - V4.1 - Linux OS
-cat("EcoGenetics Pipeline for Paired End Reads\n")
+#EGgPLant Paired End Reads - V4.1.1 - Linux OS
+cat("EGgPLant for Paired End Reads\n")
 
 Sys.setenv(R_INSTALL_STAGED = FALSE) 
 

@@ -1,5 +1,5 @@
 README
-EcoGenetics Lab Pipeline V4.1
+EGgPLant V4.1.1
 -------------------------------------------------------------------------------------------------------------------------------------------
 This pipeline was initially devolped by Owen Holland and then scripted by Morgan Ellis
 For any issues please contact either of the above.

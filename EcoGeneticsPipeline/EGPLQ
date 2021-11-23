@@ -1,6 +1,6 @@
 #!/bin/bash
-# EcoGenetics Pipeline Quality Plot
-echo "EcoGenetics Lab Pipeline Quality Plot V4.1- Developed by Owen Holland and Scripted by Morgan Ellis"
+# EGgPLant Quality Plot
+echo "EGgPLant V4.1.1- Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {
