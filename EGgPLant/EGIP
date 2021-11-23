@@ -285,6 +285,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 	--otutabout outputs/OTU.txt \
 	
 	#Relabel OTU and ASV
+	echo "Formating OTU TABLE - Please Wait"
 	totcol=`head -1 outputs/OTU.txt | awk -F"\t" '{print NF}'`
 	awk -F"\t" '{print $1}' outputs/OTU.txt > outputs/OTU.tmp
 
