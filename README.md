@@ -1,9 +1,9 @@
-# EGPL
-EcoGenetics Bioinformatics Pipeline
+# EGgPLant
+EGgPLant
 README
-EcoGenetics Lab Pipeline V4.1
+EGgPLant V4.1.1
 -------------------------------------------------------------------------------------------------------------------------------------------
-This pipeline was initially devolped by Owen Holland and then scripted by Morgan Ellis  
+EGgPLantEGgPLant was initially devolped by Owen Holland and then scripted by Morgan Ellis  
 For any issues please contact either of the above.  
 **Requirements:**  
 Linux OS or Mac OS  
@@ -15,21 +15,21 @@ CutAdapt
 VSearch  
 
 
-**IMPORTANT**: This pipeline will download and install the needed programs (R when using EGPL or EGPLQ; NCBI Blast+, NCBI Entrez Direct and Vim when using EGDB) on both systems if it is not present. For Linux OS this will involve adding to and updating the apt list and then installing the programs so the sudoer password will be required. For Mac OS this will involve installing homebrewer if it is not already present and installing the programs through homebrewer
+**IMPORTANT**: EGgPLant will download and install the needed programs (R when using EGPL or EGPLQ; NCBI Blast+, NCBI Entrez Direct and Vim when using EGDB) on both systems if it is not present. For Linux OS this will involve adding to and updating the apt list and then installing the programs so the sudoer password will be required. For Mac OS this will involve installing homebrewer if it is not already present and installing the programs through homebrewer
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **Installation**:
 
-run `bash EGPL.Inst.sh` in the same directory as the EcoGeneticsLabPipeline tarball
+run `bash EGPL.Inst.sh` in the same directory as the EGgPLant tarball
 
 Manual install:  
 1) Extract files  
 2) Go to the folder containing the script file and run: `export PATH=$PATH:~/Path/To/Scripts`
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-**EGIP** - EcoGenetics Interactive Pipeline:
+**EGIP** - EGgPLant Interactive:
 
-The Interactive pipeline will take you through the primer removal, quality plot generation and the main pipeline. It will require user input at several steps.
+EGgPLant Interactive will take you through the primer removal, quality plot generation and the main pipeline. It will require user input at several steps.
 
 Run `EGIP` and follow the prompts
       
@@ -98,7 +98,8 @@ V3.0: EGPL now uses 'Cutadapt' to remove primers instead of dada2:filterAndTrim,
 V3.1.1: Fixed numerous errors preventing r from running, added "then" to cutadapt script, fixed minor erros in cutadapt script, fixed errors in README.  
 V4.0: Added Interactive Pipeline (EGIP).  
 V4.0.1: Improved the way EGIP and EGPL pass options to RScript to simplify R code and reduce chance of errors.  
-V4.1: Added EGDB and BlastN to EGIP, R now outputs fasta file as 'Results.fa'.  
+V4.1: Added EGDB and BlastN to EGIP, R now outputs fasta file as 'Results.fa'.
+V4.1.1: Name Changed to EGgPLant  
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **DISCLAIMER**: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arrise from running this script or pipeline. Please use at own risk.
