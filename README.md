@@ -29,7 +29,7 @@ V4.1.1
            \_______________________________/
 </pre>
 -------------------------------------------------------------------------------------------------------------------------------------------
-EGgPLantEGgPLant was initially devolped by Owen Holland and then scripted by Morgan Ellis  
+EGgPLant has been devolped by Owen Holland and Morgan Ellis  
 For any issues please contact either of the above.  
 **Requirements:**  
 Linux OS or Mac OS  
