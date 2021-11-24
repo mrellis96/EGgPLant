@@ -1,6 +1,6 @@
 # EGgPLant
 EGgPLant README  
-EGgPLant V4.1.1  
+V4.1.1  
 -------------------------------------------------------------------------------------------------------------------------------------------
 EGgPLantEGgPLant was initially devolped by Owen Holland and then scripted by Morgan Ellis  
 For any issues please contact either of the above.  
