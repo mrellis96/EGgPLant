@@ -63,7 +63,7 @@ Run `EGIP` and follow the prompts
 **EGPLQ** - Quality Plot Generator:
 
 1) Go to the directory where you would like to run the pipeline  
-2) Esure your fastq.gz are in a subdirectory called "RawFastq' with in the current directory  
+2) Ensure your fastq.gz are in a subdirectory called "RawFastq' with in the current directory  
 3) Run: `EGPLQ -d "path/to/reads"`  
        -d: Directory, where the raw reads are stored - REQUIRED  
 
