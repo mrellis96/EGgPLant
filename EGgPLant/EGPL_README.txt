@@ -30,12 +30,14 @@ EGgPLant V4.1.1
 EGgPLant has been developed by Owen Holland and Morgan Ellis
 For any issues please contact either of the above.
 Requirements:
-Linux OS or Mac OS
+Linux OS (including WSL on Windows) or Mac OS
 IMPORTANT: EGgPLant will download and install the needed programs (R when using EGPL or EGPLQ; NCBI Blast+, NCBI Entrez Direct and Vim when using EGDB) on both systems if it is not present. For Linux OS this will involve adding to and updating the apt list and then installing the programs so the sudoer password will be required. For Mac OS this will involve installing homebrewer if it is not already present and installing the programs through homebrewer
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 Installation:
-run <bash EGPL.Inst.sh> in the same directory as the EGgPLant tarball
+Download the tarball (EGgPLANT_VXX.tar.gz) and the install script EGPL.Inst.sh 
+run bash EGPL.Inst.sh in the same directory as the EGgPLant tarball. The install script will now install all the necessary programs and move the EGgPLant script to /usr/bin/ (/usr/local/bin/ on mac)
+
 
 Manual install:
 1) Extract files
@@ -90,7 +92,7 @@ EGDB - Blast DB Creator:
 -q: Query, Enter the desired query to search. To get the correct syntax for the query, go to the NCBI site and perform the desired search. Then copy the query from the "Search details" box. - It is recommended to search broadly for your gene region of your marker. The query must be enclosed with quotation marks. If you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotation marks - REQUIRED
 -d: Database Name, The name for the database - NOTE: Spaces are not accepted. - REQUIRED
 
-3) For blast to find the database the path must be exported (eg <export BLASTDB=/path/to/database/>). This can be added to your .bashrc automatically by the script or run at the stat of each session.
+3) For blast to find the database the path must be exported (eg <export BLASTDB=/path/to/database/>). This can be added to your bashrc automatically by the script or run at the stat of each session.
 
 NOTE: <EGDB -h> will display the help file
 
