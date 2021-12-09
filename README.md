@@ -32,7 +32,7 @@ V4.1.1
 EGgPLant has been developed by Owen Holland and Morgan Ellis  
 For any issues please contact either of the above.  
 **Requirements:**  
-Linux OS or Mac OS  
+Linux OS (including WSL on Windows) or Mac OS  
 **Dependancies**  
 R  
 NCBI Blast+  
@@ -46,7 +46,8 @@ VSearch
 -------------------------------------------------------------------------------------------------------------------------------------------
 **Installation**:
 
-run `bash EGPL.Inst.sh` in the same directory as the EGgPLant tarball
+Download the tarball (EGgPLANT_V4.1.1.tar.gz) and the install script EGPL.Inst.sh 
+run `bash EGPL.Inst.sh` in the same directory as the EGgPLant tarball. The install script will now install all the necessary programs and move the EGgPLant script to /usr/bin/ (/usr/local/bin/ on mac)
 
 Manual install:  
 1) Extract files  
@@ -100,7 +101,7 @@ NOTE: `EGPL -h` will display the help file
        -q: Query, Enter the desired query to search. To get the correct syntax for the query, go to the NCBI site and perform the desired search. Then copy the query from the "Search details" box. - It is recommended to search broadly for your gene region of your marker. The query must be enclosed with quotation marks. If you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotataion marks - REQUIRED  
        -d: Database Name, The name for the database - NOTE: Spaces are not accepted. - REQUIRED  
 
-3) For blast to find the database the path must be exported (eg `export BLASTDB=/path/to/database/`). This can be added to your .bashrc automatically by the script or run at the stat of each session. See https://www.ncbi.nlm.nih.gov/books/NBK569856/ for further information
+3) For blast to find the database the path must be exported (eg `export BLASTDB=/path/to/database/`). This can be added to your bashrc automatically by the script or run at the stat of each session. See https://www.ncbi.nlm.nih.gov/books/NBK569856/ for further information
 
 NOTE:  `EGDB -h` will display the help file
 
