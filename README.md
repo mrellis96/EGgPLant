@@ -46,7 +46,7 @@ VSearch
 -------------------------------------------------------------------------------------------------------------------------------------------
 **Installation**:
 
-Download the tarball (EGgPLANT_VXX.tar.gz) and the install script EGPL.Inst.sh 
+Download the tarball (EGgPLant_VXX.tar.gz) and the install script EGPL.Inst.sh 
 run `bash EGPL.Inst.sh` in the same directory as the EGgPLant tarball. The install script will now install all the necessary programs and move the EGgPLant script to /usr/bin/ (/usr/local/bin/ on mac)
 
 Manual install:  
