@@ -1,6 +1,6 @@
-#!/usr/bin/Rscript
-# EcoGenetics pipeline Single End Reads - V4.1 - Linux OS
-cat("EcoGenetics Pipeline for Single End Reads\n")
+#!/usr/local/bin/Rscript
+# EGgPLant Single End Reads - V4.1.1 - Mac OS
+cat("EGgPLant for Single End Reads\n")
 
 Sys.setenv(R_INSTALL_STAGED = FALSE) 
 
@@ -19,7 +19,6 @@ suppressPackageStartupMessages(require(optparse))
 option_list <- list( 
 	make_option(c("-t", "--fwdT"), action="store", default=0, type="character", help="truncate"),
     	make_option(c("-m", "--minR"), action="store", default=10, type='character', help="minimum number of reads permissible")
-)
     opt = parse_args(OptionParser(option_list=option_list))
 
 
@@ -27,9 +26,7 @@ opt$m<-as.numeric(opt$minR)
 opt$t<-as.numeric(opt$fwdT)
 
 
-if(!("latticeExtra" %in% list.files(.libPaths()))) install.packages("latticeExtra")
 if(!("devtools" %in% list.files(.libPaths()))) install.packages("devtools")
-library(devtools)
 if(!("insect" %in% list.files(.libPaths()))) devtools::install_github("shaunpwilkinson/insect")
 if(!("BiocManager" %in% list.files(.libPaths()))) install.packages("BiocManager")
 if(!("dada2" %in% list.files(.libPaths()))) BiocManager::install("dada2")
@@ -107,6 +104,7 @@ trans.seqtab <-t(seqtab.nochim)
 write.csv(trans.seqtab, file = "outputs/Pipeline_Results.csv", row.names = TRUE)
 
 cat("Writing fasta file\n")
+
 x <- char2dna(colnames(seqtab.nochim))
 names(x) <- paste0("ASV", seq_along(x))
 #fas <- tempfile(fileext = ".fa", tmpdir = "outputs/")
