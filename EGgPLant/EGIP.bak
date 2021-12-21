@@ -1,6 +1,5 @@
 #!/bin/bash
 # EGgPLant Interactive
-#This is a test to see how github for dektop works.
 echo "EGgPLant Interactive Pipeline V4.1.1 - Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
