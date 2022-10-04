@@ -7,7 +7,7 @@ echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]] || exit -1
 then
 echo "Unzipping"
-tar -xf EcoGeneticsPipelineV*.tar.xz
+tar -xf EGgPLantV*.tar.xz
 if [[ "$(uname)" == "Linux" ]];
 	then
 	echo "Installing scripts (Linux OS)"
@@ -16,12 +16,12 @@ if [[ "$(uname)" == "Linux" ]];
 		sudo rm /usr/bin/EGIP /usr/bin/EGPL /usr/bin/EGPLQ /usr/bin/EGDB /usr/bin/EGPEP /usr/bin/EGSEP /usr/bin/EGPEPQ /usr/bin/EGSEPQ 
 		sudo rm /usr/bin/.EGS -f
 	fi
-	cd EcoGeneticsPipeline/
+	cd EGgPLant/
 	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
 	sudo mv EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS /usr/bin
 	sudo mv EGPL_README.txt ../
 	cd $cwd
-	sudo rm -r EcoGeneticsPipeline/
+	sudo rm -r EGgPLant/
 	fi
 	
 	echo "Checking packages"
