@@ -1,6 +1,6 @@
 #!/bin/bash
 # EGgPLant Quality Plot
-echo "EGgPLant V4.1.1- Developed by Owen Holland and Scripted by Morgan Ellis"
+echo "EGgPLant V4.1.2- Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {

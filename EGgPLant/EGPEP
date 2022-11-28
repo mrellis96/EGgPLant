@@ -1,7 +1,7 @@
 #!/usr/bin/Rscript
-#EGgPLant Paired End Reads - V4.1.1 - Linux OS
+#EGgPLant Paired End Reads - V4.1.2 - Linux OS
 cat("EGgPLant for Paired End Reads\n")
-
+.libPaths("~/R/x86_64-pc-linux-gnu-library/4.0/")
 Sys.setenv(R_INSTALL_STAGED = FALSE) 
 
 cat("Setting Repository\n")
@@ -17,7 +17,7 @@ suppressPackageStartupMessages(require(optparse))
 option_list <- list( 
 	make_option(c("-t", "--fwdT"), action="store", default=0, type="character", help="truncate"),
     	make_option(c("-y", "--revT"), action="store", default=0, type="character", help="truncate"),
-    	make_option(c("-m", "--minR"), action="store", default=10, type='character', help="minimum number of reads permissible")
+    	make_option(c("-m", "--minR"), action="store", default=10, type='character', help="minimum number of reads permissible"))
     opt = parse_args(OptionParser(option_list=option_list))
 
 
@@ -99,7 +99,7 @@ rownames(seqtab.nochim) <- sub("_R1$", "", rownames(seqtab.nochim))
 cat("Setting Minimum number of reads\n")
 
 colsums <- apply(seqtab.nochim, 2, sum)
-discards <- colsums < 10
+discards <- colsums < opt$m
 seqtab.nochim <- seqtab.nochim[, !discards]
 
 cat("Writing CSV\n")

@@ -1,5 +1,5 @@
 #!/usr/bin/Rscript
-#EGgPLant Paired End Reads Quality Plot - V4.1.1 - Linux OS
+#EGgPLant Paired End Reads Quality Plot - V4.1.2 - Linux OS
 cat("EGgPLant Quality Plot Generator for Paired End Reads\n")
 
 Sys.setenv(R_INSTALL_STAGED = FALSE)

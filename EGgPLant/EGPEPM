@@ -1,5 +1,5 @@
 #!/usr/local/bin/Rscript
-#EGgPLant Paired End Reads - V4.1.1 - Mac OS
+#EGgPLant Paired End Reads - V4.1.2 - Mac OS
 cat("EGgPLant for Paired End Reads\n")
 
 Sys.setenv(R_INSTALL_STAGED = FALSE) 
@@ -17,7 +17,7 @@ suppressPackageStartupMessages(require(optparse))
 option_list <- list( 
 	make_option(c("-t", "--fwdT"), action="store", default=0, type="character", help="truncate"),
     	make_option(c("-y", "--revT"), action="store", default=0, type="character", help="truncate"),
-    	make_option(c("-m", "--minR"), action="store", default=10, type='character', help="minimum number of reads permissible")
+    	make_option(c("-m", "--minR"), action="store", default=10, type='character', help="minimum number of reads permissible"))
     opt = parse_args(OptionParser(option_list=option_list))
 
 
@@ -27,6 +27,7 @@ opt$y<-as.numeric(opt$revT)
 
 if(!("latticeExtra" %in% list.files(.libPaths()))) install.packages("latticeExtra")
 if(!("devtools" %in% list.files(.libPaths()))) install.packages("devtools")
+library(devtools)
 if(!("insect" %in% list.files(.libPaths()))) devtools::install_github("shaunpwilkinson/insect")
 if(!("BiocManager" %in% list.files(.libPaths()))) install.packages("BiocManager")
 if(!("dada2" %in% list.files(.libPaths()))) BiocManager::install("dada2")
@@ -46,7 +47,7 @@ fastqRs <- sort(list.files(pathR, pattern="fastq.gz"))
 
 cat("Trimming and Filtering Sequences\n")
 
-out <- filterAndTrim(fwd=file.path(pathF, fastqFs), filt=file.path(filtpathF, fastqFs), rev=file.path(pathR, fastqRs), filt.rev=file.path(filtpathR, fastqRs), truncLen=c(opt$t,opt$y),maxEE=c(2,5), truncQ=2, maxN=0, rm.phix=TRUE, compress=TRUE, verbose=TRUE, multithread=FALSE)
+out <- filterAndTrim(fwd=file.path(pathF, fastqFs), filt=file.path(filtpathF, fastqFs), rev=file.path(pathR, fastqRs), filt.rev=file.path(filtpathR, fastqRs), truncLen=c(opt$t,opt$y), maxEE=c(2,5), truncQ=2, maxN=0, rm.phix=TRUE, compress=TRUE, verbose=TRUE, multithread=FALSE)
 
 head(out)
 
@@ -98,7 +99,7 @@ rownames(seqtab.nochim) <- sub("_R1$", "", rownames(seqtab.nochim))
 cat("Setting Minimum number of reads\n")
 
 colsums <- apply(seqtab.nochim, 2, sum)
-discards <- colsums < 10
+discards <- colsums < opt$m
 seqtab.nochim <- seqtab.nochim[, !discards]
 
 cat("Writing CSV\n")

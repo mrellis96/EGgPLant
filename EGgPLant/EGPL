@@ -1,6 +1,6 @@
 #!/bin/bash
 # EGgPLant
-echo "EGgPLant V4.1.1 - Developed by Owen Holland and Scripted by Morgan Ellis"
+echo "EGgPLant V4.1.2 - Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {
@@ -70,7 +70,7 @@ while getopts ":d:f:r:p:t:y:l:n:m:o:c h s" opt; do
         h) usage
         exit
         ;;
-	s) cat /usr/bin/.EGS
+	s) less /usr/bin/.EGS
 	exit
 	;;
         \?) echo 
@@ -127,7 +127,7 @@ if [ ! $fwdp == "" ]
 		cutadapt -j 8 -m 90 -O 10 -g "$fwdp" -G "$revp" --trimmed-only -o ../"$raw"_Trimmed/${SAMPLE}_R1_001.fastq.gz -p ../"$raw"_Trimmed/${SAMPLE}_R2_001.fastq.gz ${SAMPLE}_R1_001.fastq.gz ${SAMPLE}_R2_001.fastq.gz;
 		done |& tee -a ../outputs/cutadapt.log.txt
 		cd ../
-		raw=""$raw"_PrimerTrimmed"
+		raw=""$raw"_Trimmed"
 	else #Single
 	mkdir "$raw"_Trimmed/
 	cd $raw
