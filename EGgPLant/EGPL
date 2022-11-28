@@ -107,7 +107,7 @@ if  [ ! $poly == "" ]
 	cd $raw
 	for i in *.fastq.gz; 
 	do SAMPLE=$(echo ${i} | sed "s/.fastq\.gz//") ; 
-	cutadapt -j 8 -O 6 -g "$poly""$poly""$poly""$poly""$poly""$poly" -o ../"$raw"_Poly/${SAMPLE}.fastq.gz ${SAMPLE}.fastq.gz;
+	cutadapt -j 8 -O 6 -a "$poly""$poly""$poly""$poly""$poly""$poly" -o ../"$raw"_Poly/${SAMPLE}.fastq.gz ${SAMPLE}.fastq.gz;
 	done |& tee ../outputs/cutadapt.log.txt
 	cd ../
 	raw=""$raw"_Poly"	
