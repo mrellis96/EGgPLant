@@ -1,6 +1,6 @@
 # EGgPLant
 EGgPLant README  
-V4.1.1
+V4.2
 <pre>
             _______________________________
            /_______________________________\
@@ -59,7 +59,9 @@ Manual install:
 EGgPLant Interactive will take you through the primer removal, quality plot generation and the main pipeline. It will require user input at several steps.
 
 Run `EGIP` and follow the prompts
-      
+
+NOTE: This is still in early devolment and is NOT recommended. Please use EGPL instead.
+
 -------------------------------------------------------------------------------------------------------------------------------------------
 **EGPLQ** - Quality Plot Generator:
 
@@ -126,7 +128,9 @@ V3.1.1: Fixed numerous errors preventing r from running, added "then" to cutadap
 V4.0: Added Interactive Pipeline (EGIP).  
 V4.0.1: Improved the way EGIP and EGPL pass options to RScript to simplify R code and reduce chance of errors.  
 V4.1: Added EGDB and BlastN to EGIP, R now outputs fasta file as 'Results.fa'.  
-V4.1.1: Name Changed to EGgPLant.  
+V4.1.1: Name Changed to EGgPLant.
+V4.1.2: Bug Fixes
+V4.2: Changed install script to install to a local dir. not /usr/bin
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **DISCLAIMER**: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arise from running this script or pipeline. Please use at own risk.
