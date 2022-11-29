@@ -1,5 +1,5 @@
 #!/bin/bash
-#EGgPLant install Scrip V4.1.2
+#EGgPLant install Scrip V4.2
 echo "Thank you for choosing EGgPLant"
 echo "The pipeline will now be installed including all programs such as R, Vim, NCBI-Blast etc."
 read -p "Do you want to continue? (Y/N/C) "
@@ -8,22 +8,20 @@ if [[ $REPLY =~ ^[Yy]$ ]] || exit -1
 then
 echo "Unzipping"
 tar -xf EGgPLantV*.tar.xz
-if [[ "$(uname)" == "Linux" ]];
+	if [[ "$(uname)" == "Linux" ]];
 	then
 	echo "Installing scripts (Linux OS)"
-	if [ -f "/usr/bin/EGPL" ]
-		then
-		sudo rm /usr/bin/EGIP /usr/bin/EGPL /usr/bin/EGPLQ /usr/bin/EGDB /usr/bin/EGPEP /usr/bin/EGSEP /usr/bin/EGPEPQ /usr/bin/EGSEPQ 
-		sudo rm /usr/bin/.EGS -f
-	fi
 	cd EGgPLant/
 	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
-	sudo mv EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS /usr/bin
-	sudo mv EGPL_README.txt ../
-	cd $cwd
-	sudo rm -r EGgPLant/
+	export PATH=$PATH:"$pwd"
+	read -p "Add path to bashrc? (Y/N/C)"
+		if [[ $REPLY =~ ^[Yy]$ ]];
+		then
+		echo "export PATH=$PATH:"$pwd" >> $HOME/.bashrc"
+		elif [[ $REPLY =~ ^[Cc]$ ]]; then
+		exit
+		fi
 	fi
-	
 	echo "Checking packages"
 	#Check if packages are installed
  	echo "r-base"
@@ -135,8 +133,7 @@ if [[ "$(uname)" == "Linux" ]];
 	if [ ! -d "$HOME/R/x86_64-pc-linux-gnu-library/4.0" ]
 		then
 		echo "Personal Library not found"
-		read -p "Would you like to create a personal library
-'~/R/x86_64-pc-linux-gnu-library/4.0' to install R Packages? (Y/N) "
+		read -p "Would you like to create a personal library ‘~/R/x86_64-pc-linux-gnu-library/4.0’ to install R Packages? (Y/N)"
 		echo    # (optional) move to a new line
 		if [[ $REPLY =~ ^[Yy]$ ]]
 			then
@@ -151,17 +148,16 @@ if [[ "$(uname)" == "Linux" ]];
 elif [[ "$(uname)" == "Darwin" ]];
 	then
 	echo "Installing scripts (Mac OS)"
-	if [ -f "/usr/local/bin/EGPL" ]
+	cd EGgPLant/
+	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
+	export PATH=$PATH:"$pwd"
+	read -p "Add path to bashrc? (Y/N/C)"
+		if [[ $REPLY =~ ^[Yy]$ ]];
 		then
-		sudo rm /usr/local/bin/EGIP /usr/local/bin/EGPL /usr/bin/local/EGPLQ /usr/local/bin/EGDB /usr/local/bin/EGPEPM /usr/local/bin/EGSEPM /usr/local/bin/EGPEPQM /usr/local/bin/EGSEPQM
-		sudo rm /usr/local/bin/.EGS -f
-	fi
-	cd EcoGeneticsPipeline/
-	chmod 777 EGPL EGPLQ EGDB EGPEPM GSEPM EGPEPQM EGSEPQM EGIP .EGS
-	sudo mv EGPL EGPLQ EGDB EGPEPM EGSEPM EGSEPQM EGPEPQM EGIP .EGS /usr/local/bin
-	sudo mv EGPL_README.txt ../
-	cd $cwd
-	sudo rm -r EcoGeneticsPipeline/
+		echo "export PATH=$PATH:"$pwd" >> $HOME/.bash_profile"
+		elif [[ $REPLY =~ ^[Cc]$ ]]; then
+		exit
+		fi
 	
 	
 	echo "Checking packages"

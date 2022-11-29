@@ -50,6 +50,8 @@ The Interactive pipeline will take you through the primer removal, quality plot 
 
 run <EGIP> and follow the prompts
 
+NOTE: This is still in early devolment and is NOT recommended. Please use EGPL instead.
+
 -------------------------------------------------------------------------------------------------------------------------------------------
 EGPLQ - Quality Plot Generator:
 
