@@ -1,5 +1,5 @@
 #!/bin/bash
-#EGgPLant install Scrip V4.1.1
+#EGgPLant install Scrip V4.1.2
 echo "Thank you for choosing EGgPLant"
 echo "The pipeline will now be installed including all programs such as R, Vim, NCBI-Blast etc."
 read -p "Do you want to continue? (Y/N/C) "
@@ -7,7 +7,7 @@ echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]] || exit -1
 then
 echo "Unzipping"
-tar -xf EcoGeneticsPipelineV*.tar.xz
+tar -xf EGgPLantV*.tar.xz
 if [[ "$(uname)" == "Linux" ]];
 	then
 	echo "Installing scripts (Linux OS)"
@@ -16,12 +16,12 @@ if [[ "$(uname)" == "Linux" ]];
 		sudo rm /usr/bin/EGIP /usr/bin/EGPL /usr/bin/EGPLQ /usr/bin/EGDB /usr/bin/EGPEP /usr/bin/EGSEP /usr/bin/EGPEPQ /usr/bin/EGSEPQ 
 		sudo rm /usr/bin/.EGS -f
 	fi
-	cd EcoGeneticsPipeline/
+	cd EGgPLant/
 	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
 	sudo mv EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS /usr/bin
 	sudo mv EGPL_README.txt ../
 	cd $cwd
-	sudo rm -r EcoGeneticsPipeline/
+	sudo rm -r EGgPLant/
 	fi
 	
 	echo "Checking packages"
@@ -44,11 +44,11 @@ if [[ "$(uname)" == "Linux" ]];
             	sudo apt-get update
             	
             	echo "installing packages"
-            	sudo apt-get install r-base r-base-core r-recommended r-base-dev 
+            	sudo apt-get install r-base r-base-core r-recommended r-cran-dev 
         else
         echo    "Installed"
         echo
-        
+   
 	fi
     	echo "libcurl4-openssl-dev"
     	which curl-config &> /dev/null
@@ -136,7 +136,7 @@ if [[ "$(uname)" == "Linux" ]];
 		then
 		echo "Personal Library not found"
 		read -p "Would you like to create a personal library
-‘~/R/x86_64-pc-linux-gnu-library/4.0’ to install R Packages? (Y/N) "
+'~/R/x86_64-pc-linux-gnu-library/4.0' to install R Packages? (Y/N) "
 		echo    # (optional) move to a new line
 		if [[ $REPLY =~ ^[Yy]$ ]]
 			then
