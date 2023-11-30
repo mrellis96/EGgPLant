@@ -130,7 +130,7 @@ V4.0.1: Improved the way EGIP and EGPL pass options to RScript to simplify R cod
 V4.1: Added EGDB and BlastN to EGIP, R now outputs fasta file as 'Results.fa'.  
 V4.1.1: Name Changed to EGgPLant.
 V4.1.2: Bug Fixes
-V4.2: Changed install script to install to a local dir. not /usr/bin
+V4.2: Changed install script to install to a local dir. not /usr/bin, Added LCA script, renamed EGPL to eggplant
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **DISCLAIMER**: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arise from running this script or pipeline. Please use at own risk.
