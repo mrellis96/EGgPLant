@@ -46,10 +46,15 @@ def find_lowest_common_rank(blast_output_file, mapping_file):
                     lineage_lists.append(lineage)
                 except Exception as e:
                     print(f"Error processing Sample {query_id}: {e}")
+                    #row_dict = {'Query ID' : query_id,'Lineage.name' : "Unassigned", 'Lowest Common Rank' : "Unassigned", 'Taxon Name' : "Unassigned"}
+                    #results_dict.append(row_dict)
 
         if not lineage_lists:
             print(f"Query ID: {query_id}")
             print("No valid subject IDs found\n")
+            row_dict = {'Query ID' : query_id,'Lineage.name' : "Unassigned", 'Lowest Common Rank' : "Unassigned", 'Taxon Name' : "Unassigned"}
+            results_dict.append(row_dict)
+
             continue
 
         common_ranks = {}
