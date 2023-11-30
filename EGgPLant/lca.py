@@ -40,9 +40,12 @@ def find_lowest_common_rank(blast_output_file, mapping_file):
         lineage_lists = []
         for subject_id in subject_ids:
             if subject_id in mapping:
-                taxon_id = mapping[subject_id]
-                lineage = ncbi.get_lineage(taxon_id)
-                lineage_lists.append(lineage)
+                try:
+                    taxon_id = mapping[subject_id]
+                    lineage = ncbi.get_lineage(taxon_id)
+                    lineage_lists.append(lineage)
+                except Exception as e:
+                    print(f"Error processing Sample {query_id}: {e}")
 
         if not lineage_lists:
             print(f"Query ID: {query_id}")
