@@ -1,3 +1,4 @@
+# Please use the folder NOT the .tar.xz while for the time being
 # EGgPLant
 EGgPLant README  
 V4.2
