@@ -1,5 +1,5 @@
 #!/usr/local/bin/Rscript
-#EGgPLant Paired End Reads - V4.2 - Mac OS
+#EGgPLant Paired End Reads - V4.1.2 - Mac OS
 cat("EGgPLant for Paired End Reads\n")
 
 Sys.setenv(R_INSTALL_STAGED = FALSE) 

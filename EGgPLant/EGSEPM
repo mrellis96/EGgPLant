@@ -1,5 +1,5 @@
 #!/usr/local/bin/Rscript
-# EGgPLant Single End Reads - V4.2 - Mac OS
+# EGgPLant Single End Reads - V4.1.2 - Mac OS
 cat("EGgPLant for Single End Reads\n")
 
 Sys.setenv(R_INSTALL_STAGED = FALSE) 

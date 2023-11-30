@@ -209,13 +209,13 @@ elif [[ "$(uname)" == "Darwin" ]];
 		builtin exit
 		export PATH=$PATH:$HOME/edirect >& /dev/null || setenv PATH "${PATH}:$HOME/edirect"
 		./edirect/setup.sh
-		echo "export PATH=\$PATH:\$HOME/edirect" >> $HOME/.bash_profile
+		echo "export PATH=\$PATH:\$HOME/edirect" >> $HOME/.profile
 		cd $cwd
          	else
         	echo    "Installed"
 	fi
 	echo "Cutadapt"
-	which cutadatp &> /dev/null
+	which cutadapt &> /dev/null
 	if [ $? -ne 0 ]
 		then
 		echo "Not installed"
@@ -237,6 +237,21 @@ elif [[ "$(uname)" == "Darwin" ]];
 			-c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
            	fi
            	brew install vsearch          	
+           	else
+        	echo    "Installed"
+	fi
+	echo "gcut"
+     	which gcut &> /dev/null  
+    	if [ $? -ne 0 ]
+        	then
+            	echo "Not installed"  
+           	which brew &> /dev/null 
+           	if [ $? -ne 0 ]
+           		then
+			echo "Installing Homebrew (Required to install packages)"
+			-c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+           	fi
+           	brew install coreutils          	
            	else
         	echo    "Installed"
 	fi

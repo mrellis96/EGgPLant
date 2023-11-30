@@ -1,6 +1,6 @@
 #!/bin/bash
 #EGgPLant - Database Creator
-echo "EGgPLant Database Creator V4.2 Developed by Owen Holland and Scripted by Morgan Ellis"
+echo "EGgPLant Database Creator V4.1.2 Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {
