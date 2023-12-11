@@ -16,9 +16,9 @@ def parse_taxonomic_mapping(mapping_file):
 def extract_kpcofgs(lineage, ranks_order, ncbi):
     kpcofgs = []
     for rank in ranks_order:
-        taxid = next((tid for tid in lineage if ncbi.get_rank([tid])[tid] == rank), None)
+        taxid = next((tid for tid in lineage if ncbi.get_rank([tid])[tid] == rank and tid), None)
         kpcofgs.append(taxid if taxid else "")
-    return kpcofgs
+    return [tid for tid in kpcofgs if tid]  # Filter out empty strings
 
 def find_lowest_common_rank(blast_output_file, mapping_file):
     ncbi = NCBITaxa()
@@ -35,6 +35,7 @@ def find_lowest_common_rank(blast_output_file, mapping_file):
             sample_data[query_id].append(subject_id)
 
     ranks_order = ['species', 'genus', 'family', 'order', 'class', 'phylum', 'kingdom']
+    ranks_output_order = ['kingdom', 'phylum', 'class', 'order', 'family','genus','species']
 
     for query_id, subject_ids in sample_data.items():
         lineage_lists = []
@@ -43,7 +44,8 @@ def find_lowest_common_rank(blast_output_file, mapping_file):
                 try:
                     taxon_id = mapping[subject_id]
                     lineage = ncbi.get_lineage(taxon_id)
-                    lineage_lists.append(lineage)
+                    kpcofgs_lineage = extract_kpcofgs(lineage, ranks_order, ncbi)  # Extract KPCOFGS
+                    lineage_lists.append(kpcofgs_lineage)
                 except Exception as e:
                     print(f"Error processing Sample {query_id}: {e}")
                     #row_dict = {'Query ID' : query_id,'Lineage.name' : "Unassigned", 'Lowest Common Rank' : "Unassigned", 'Taxon Name' : "Unassigned"}
@@ -78,11 +80,13 @@ def find_lowest_common_rank(blast_output_file, mapping_file):
             common_rank_taxon_id = min(taxon_ids)
             common_rank_taxa = ncbi.get_taxid_translator([common_rank_taxon_id])[common_rank_taxon_id]
             common_rank_lineage = ncbi.get_lineage(common_rank_taxon_id)
-            linage_names = ncbi.get_taxid_translator(common_rank_lineage)
-            names = [linage_names[taxid] for taxid in common_rank_lineage]
+            kpcofgs_lineage = extract_kpcofgs(common_rank_lineage, ranks_output_order, ncbi)
+            kpcofgs_names = ncbi.get_taxid_translator(kpcofgs_lineage)
+            kpcofgs_names_list = [kpcofgs_names[taxid] for taxid in kpcofgs_lineage]
+
             print(f"Query ID: {query_id}")
             print(f"Lowest Common Rank: {lowest_common_rank}: {common_rank_taxa}")
-            row_dict = {'Query ID' : query_id,'Lineage.name' : names, 'Lowest Common Rank' : lowest_common_rank, 'Taxon Name' : common_rank_taxa}
+            row_dict = {'Query ID' : query_id,'Lineage.name' : kpcofgs_names_list, 'Lowest Common Rank' : lowest_common_rank, 'Taxon Name' : common_rank_taxa}
             results_dict.append(row_dict)
 
 
