@@ -74,12 +74,12 @@ NOTE: This is still in early devolment and is NOT recommended. Please use EGPL i
 NOTE: 'EGPLQ -h' will display the help file
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-**EGPL** - Main Pipeline:
+**eggplant** - Main Pipeline:
 
 EGPL - Main Pipeline:
 
 1) Go to the directory where you would like to run the pipeline  
-2) Run: `EGPL -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -o []` (Replace [] with value eg: -t 120)  
+2) Run: `eggplant -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -o []` (Replace [] with value eg: -t 120)  
        -d: Directory, where the raw reads are stored - REQUIRED  
        -f: Forward Primer, The sequence of the Forward Primer for Cutadapt to remove  
        -r: IF PAIRED END, The sequence of the Reverse Primer for Cutadapt to remove  
