@@ -1,5 +1,5 @@
 #!/usr/local/bin/Rscript
-# EGgPLant Single End Reads - V4.1.2 - Mac OS
+# EGgPLant Single End Reads - V5 - Mac OS
 cat("EGgPLant for Single End Reads\n")
 
 Sys.setenv(R_INSTALL_STAGED = FALSE) 
@@ -19,6 +19,7 @@ suppressPackageStartupMessages(require(optparse))
 option_list <- list( 
 	make_option(c("-t", "--fwdT"), action="store", default=0, type="character", help="truncate"),
     	make_option(c("-m", "--minR"), action="store", default=10, type='character', help="minimum number of reads permissible")
+)
     opt = parse_args(OptionParser(option_list=option_list))
 
 

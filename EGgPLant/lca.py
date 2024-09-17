@@ -1,3 +1,4 @@
+# EGgPLant Lowest Common Ancesctor Script - V5
 from ete3 import NCBITaxa
 import pandas as pd
 import sys

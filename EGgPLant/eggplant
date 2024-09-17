@@ -1,13 +1,13 @@
 #!/bin/bash
 # EGgPLant
-echo "EGgPLant V4.1.2 - Developed by Owen Holland and Scripted by Morgan Ellis"
+echo "EGgPLant V5 - Developed by Owen Holland and Scripted by Morgan Ellis"
 
 usage()
 {
 echo
 echo "EcoGenetics Lab Pipeline for Demupltiplexing Sequences"
 echo 
-echo "Usage: EGPL -d [-f] [-r] [-l] [-p] [-t] [-y] [-n] [-m] [-o] [-c] [-h]"
+echo "Usage: EGPL -d [-f] [-r] [-l] [-p] [-t] [-y] [-n] [-m] [-o] [-b] [-v] [-c] [-h]"
 echo "Example: EGPL -d RawFastq -f ATCG -r CTAG -p G -t 280 -y 250 -l 10 -m 10 -o 0.99"
 echo "Options:"
 echo "d     Directory - The Directory where the raw reads are stored"
@@ -19,6 +19,8 @@ echo "t     Truncate - Where you would like filterAndTrim to truncate the sequen
 echo "y     Truncate Reverse Read - IF PAIRED END, where you would like filterAndTrim to truncate the reverse reads (Default=No Truncation). Must be positive interger"
 echo "n     Minimum Read Length - Remove reads with length less than [n] (Default=20)"
 echo "m     Minimum Number of Reads - Minimum number of reads per sequences allowed after chimera removal (Default 10). Must be positive interger"
+echo "b		Blast Database - Database to BLAST output sequences against. Must be BLASTn formated database (see EGDB)"
+echo "v		Taxanomic Map - Path to taxanomic mapping file for Blast Database to pass to LCA script"
 echo "o     Cluster ASV in to OTUs based on similarity (0-1) (Default = No Clustering)"
 echo "c     Citations - Citations from the various programs/packages used"
 echo "h     Help - Displays help readout"
@@ -42,7 +44,7 @@ echo "vSearch"
 echo "Rognes, T., Flouri, T., Nichols, B., Quince, C. and Mahé, F., 2016. VSEARCH: a versatile open source tool for metagenomics. PeerJ, 4, p.e2584."
 } 
 
-while getopts ":d:f:r:p:t:y:l:n:m:o:c h s" opt; do
+while getopts ":d:f:r:p:t:y:l:n:m:b:v:o:c h s" opt; do
         case $opt in
         d) raw="${OPTARG}"
         ;;
@@ -62,6 +64,10 @@ while getopts ":d:f:r:p:t:y:l:n:m:o:c h s" opt; do
         ;;
         m) minR="${OPTARG}"
         ;;
+		b) bla="${OPTARG}"
+		;;
+		v) tmap="${OPTARG}"
+		;;
         o) otu="${OPTARG}"
         ;;
         c) citation
@@ -70,9 +76,9 @@ while getopts ":d:f:r:p:t:y:l:n:m:o:c h s" opt; do
         h) usage
         exit
         ;;
-	s) .EGS
-	exit
-	;;
+		s) .EGS
+		exit
+		;;
         \?) echo 
         echo "Invalid Option"
         usage
@@ -187,7 +193,7 @@ if [[ ! -f "outputs/Pipeline_Results.csv" ]];
 	exit
 fi
 #copy and remove site names
-cp outputs/Pipeline_Results.csv outputs/Pipeline_Results.csv.bak
+#cp outputs/Pipeline_Results.csv outputs/Pipeline_Results.csv.bak
 awk -F"," 'FNR == 1 { print }' outputs/Pipeline_Results.csv >outputs/site.tmp
 tail -n +2 outputs/Pipeline_Results.csv > outputs/pipe.tmp
 #relabel as ASV1-ASVN
@@ -204,7 +210,7 @@ fi
 awk 'BEGIN{ print""}1' outputs/pipe.tmp3 >outputs/pipe.tmp4
 #Paste all files together
 paste outputs/site.tmp outputs/pipe.tmp4 >outputs/Pipeline_Results.csv
-#rm outputs/site.tmp outputs/pipe.tmp outputs/pipe.tmp2 outputs/pipe.tmp3 outputs/pipe.tmp4
+rm outputs/site.tmp outputs/pipe.tmp outputs/pipe.tmp2 outputs/pipe.tmp3 outputs/pipe.tmp4
 
 
 if [ $otu > 0 ]
@@ -281,8 +287,8 @@ if [ $otu > 0 ]
 		gcut --complement -d',' -f2 outputs/otu-asv.csv >outputs/OTU.tmp
 	fi
 	
-	declare -A sample_data
-	
+	declare -A sample_data#
+
 	while IFS=',' read -r line; do
     	IFS=',' read -a values <<< "$line"
    	 	otu="${values[0]}"
@@ -291,7 +297,7 @@ if [ $otu > 0 ]
         	sample_data["$otu,$i"]=$((sample_data["$otu,$i"] + sample))
     	done
 	done < outputs/OTU.tmp
-# Write the condensed data to the output file
+ Write the condensed data to the output file
 	echo -n "otu" > OTU.csv
 	for ((i = 1; i < ${#values[@]}; i++)); do
     	echo -n ", sample$i Total" >> OTU.csv
@@ -302,5 +308,12 @@ if [ $otu > 0 ]
     	echo "$otu, ${sample_data[$sample]}" >> OTU.csv
 	done
 	echo "OTU readcount in OTU.csv"
-done
+fi
+
+if  [ ! $bla == "" ]
+	then
+	echo "Blasting sequences"
+	blastn -query outputs/Results.fa -db $bla -outfmt 6 -out outputs/blast.out -perc_identity 90 -qcov_hsp_perc 80
+	lcapath=which eggplant | sed 's!/[^/]*$!/!'
+	python3 $lcapath outputs/blast.out $tmap
 fi
