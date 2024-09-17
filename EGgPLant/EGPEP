@@ -1,5 +1,5 @@
 #!/usr/bin/Rscript
-#EGgPLant Paired End Reads - V4.1.2 - Linux OS
+#EGgPLant Paired End Reads - V5 - Linux OS
 cat("EGgPLant for Paired End Reads\n")
 .libPaths("~/R/x86_64-pc-linux-gnu-library/4.0/")
 Sys.setenv(R_INSTALL_STAGED = FALSE) 
