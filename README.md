@@ -76,7 +76,7 @@ NOTE: 'EGPLQ -h' will display the help file
 -------------------------------------------------------------------------------------------------------------------------------------------
 **eggplant** - Main Pipeline:
 
-EGPL - Main Pipeline:
+eggplant - Main Pipeline:
 
 1) Go to the directory where you would like to run the pipeline  
 2) Run: `eggplant -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -o []` (Replace [] with value eg: -t 120)  
@@ -130,9 +130,9 @@ V4.0: Added Interactive Pipeline (EGIP).
 V4.0.1: Improved the way EGIP and EGPL pass options to RScript to simplify R code and reduce chance of errors.  
 V4.1: Added EGDB and BlastN to EGIP, R now outputs fasta file as 'Results.fa'.  
 V4.1.1: Name Changed to EGgPLant.
-V4.1.2: Bug Fixes
-V4.2: Changed install script to install to a local dir. not /usr/bin, Added LCA script, renamed EGPL to eggplant
-V5: Intergrated blast and LCA script in to main eggplant pipeline
+V4.1.2: Bug Fixes.
+V4.2: Changed install script to install to a local dir. not /usr/bin, Added LCA script, renamed EGPL to eggplant.
+V5: Intergrated blast and LCA script in to main eggplant pipeline.
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **DISCLAIMER**: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arise from running this script or pipeline. Please use at own risk.
