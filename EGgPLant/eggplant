@@ -297,7 +297,7 @@ if [ $otu > 0 ]
         	sample_data["$otu,$i"]=$((sample_data["$otu,$i"] + sample))
     	done
 	done < outputs/OTU.tmp
- Write the condensed data to the output file
+# Write the condensed data to the output file
 	echo -n "otu" > OTU.csv
 	for ((i = 1; i < ${#values[@]}; i++)); do
     	echo -n ", sample$i Total" >> OTU.csv
@@ -313,7 +313,7 @@ fi
 if  [ ! $bla == "" ]
 	then
 	echo "Blasting sequences"
-	blastn -query outputs/Results.fa -db $bla -outfmt 6 -out outputs/blast.out -perc_identity 90 -qcov_hsp_perc 80
+	blastn -query outputs/Results.fa -db $bla -outfmt "6 qseqid sseqid pident qcovs" -out outputs/blast.out
 	lcapath=which eggplant | sed 's!/[^/]*$!/!'
-	python3 $lcapath outputs/blast.out $tmap
+	python3 $lcapath/lca.py outputs/blast.out $tmap
 fi
