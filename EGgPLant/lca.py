@@ -1,3 +1,4 @@
+#!/usr/bin/python3.6
 # EGgPLant Lowest Common Ancesctor Script - V5
 from ete3 import NCBITaxa
 import pandas as pd
@@ -21,6 +22,14 @@ def extract_kpcofgs(lineage, ranks_order, ncbi):
         kpcofgs.append(taxid if taxid else "")
     return [tid for tid in kpcofgs if tid]  # Filter out empty strings
 
+def clean_column(column):
+    # Find the position of '###' in the column, if it exists
+    if '###' in column:
+        return column.split('###')[0]  # Keep everything before '###'
+    if ';' in column:
+        return column.split(';')[0]
+    return column  # If no '###' found, return the column as is
+
 def find_lowest_common_rank(blast_output_file, mapping_file):
     ncbi = NCBITaxa()
     mapping = parse_taxonomic_mapping(mapping_file)
@@ -29,10 +38,10 @@ def find_lowest_common_rank(blast_output_file, mapping_file):
     with open(blast_output_file, 'r') as blast_file:
         for line in blast_file:
             columns = line.strip().split('\t')
-            query_id, subject_id, perc_id, qcov = columns[0], columns[1], float(columns[3]), float(columns[4])
+            query_id, subject_id, perc_id, qcov = clean_column(columns[0]), clean_column(columns[1]), float(clean_column(columns[2])), float(clean_column(columns[3]))
 
             # Only process if perc_id > 90% and qcov > 95%
-            if perc_id > 90 and qcov > 95:
+            if perc_id > 80 and qcov > 85:
                 if query_id not in sample_data:
                     sample_data[query_id] = []
                 sample_data[query_id].append(subject_id)
@@ -101,7 +110,7 @@ result_df = pd.DataFrame(columns=['Query ID', 'Lineage.name', 'Lowest Common Ran
 results_dict = []
 find_lowest_common_rank(blast_output_file, mapping_file)
 result_df =pd.DataFrame.from_dict(results_dict)
-result_df.to_csv("LCA.out", index=False)
+result_df.to_csv("outputs/LCA.csv", index=False, sep=',')
 
 print("")
-print("Please Check LCA.out")
+print("Please Check LCA.csv")
