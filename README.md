@@ -124,7 +124,8 @@ V2.3.2: Moved ubuntu version check so it no longer interferes with the installat
 V2.3.3: Fixed errors with EGPL.inst.sh.  
 V2.4: Fixed issues with R library paths, removed redundancies in EGPL, EGPLQ, EGDB created from EGPL.Inst.sh.  
 V2.5 Added option [-n] to EGPL, Fixed bug that caused mac pipelines to error if option [-o] is added, Made 10 the default for option [-m].  
-V3.0: EGPL now uses 'Cutadapt' to remove primers instead of dada2:filterAndTrim, ASV's now added to Pipeline_results.csv instead of sequences. ASV's automatically converted to OTU's and stored in OTU.csv.  V3.1: Readded truncation to pipeline, added Poly tail remover, added vSearch citations
+V3.0: EGPL now uses 'Cutadapt' to remove primers instead of dada2:filterAndTrim, ASV's now added to Pipeline_results.csv instead of sequences. ASV's automatically converted to OTU's and stored in OTU.csv.  
+V3.1: Readded truncation to pipeline, added Poly tail remover, added vSearch citations.           
 V3.1.1: Fixed numerous errors preventing r from running, added "then" to cutadapt script, fixed minor erros in cutadapt script, fixed errors in README.  
 V4.0: Added Interactive Pipeline (EGIP).  
 V4.0.1: Improved the way EGIP and EGPL pass options to RScript to simplify R code and reduce chance of errors.  
