@@ -30,8 +30,9 @@ V5
            \_______________________________/
 </pre>
 -------------------------------------------------------------------------------------------------------------------------------------------
-EGgPLant has been developed by Owen Holland and Morgan Ellis  
-For any issues please contact either of the above.  
+EGgPLant has been developed by Morgan Ellis and Owen Holland
+Prefered Citation:
+
 **Requirements:**  
 Linux OS (including WSL on Windows) or Mac OS  
 **Dependancies**  
@@ -55,15 +56,6 @@ Manual install:
 2) Go to the folder containing the script file and run: `export PATH=$PATH:~/Path/To/Scripts`
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-**EGIP** - EGgPLant Interactive:
-
-EGgPLant Interactive will take you through the primer removal, quality plot generation and the main pipeline. It will require user input at several steps.
-
-Run `EGIP` and follow the prompts
-
-NOTE: This is still in early devolment and is NOT recommended. Please use EGPL instead.
-
--------------------------------------------------------------------------------------------------------------------------------------------
 **EGPLQ** - Quality Plot Generator:
 
 1) Go to the directory where you would like to run the pipeline  
@@ -79,7 +71,7 @@ NOTE: 'EGPLQ -h' will display the help file
 eggplant - Main Pipeline:
 
 1) Go to the directory where you would like to run the pipeline  
-2) Run: `eggplant -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -o []` (Replace [] with value eg: -t 120)  
+2) Run: `eggplant -d [] -f [] -r [] -l [] -p [] -t [] -y []-n [] -m [] -b[] -v[] -o []` (Replace [] with value eg: -t 120)  
        -d: Directory, where the raw reads are stored - REQUIRED  
        -f: Forward Primer, The sequence of the Forward Primer for Cutadapt to remove  
        -r: IF PAIRED END, The sequence of the Reverse Primer for Cutadapt to remove  
@@ -88,10 +80,12 @@ eggplant - Main Pipeline:
        -t: Truncate, where you would like filterAndTrim to truncate the sequences (Default= No truncation).  
        -y: IF PAIRED END, where you would like filterAndTrim to truncate the reverse reads (Default=No Truncation).  
        -n: Remove reads with length less than [n] BP (Default = 20).  
-       -m: Minimum number of reads per sequences allowed after chimera removal (Default = 10).  
+       -m: Minimum number of reads per sequences allowed after chimera removal (Default = 10).
+       -b: Blast Database - Database to BLAST output sequences against. Must be BLASTn formatted database (see EGDB)
+       -v: Taxonomic Map - Path to taxonomic mapping file for Blast Database to pass to LCA script
        -o: Cluster ASV in to OTU. ASVs will be clustered in to OTUs based on the similarity value (0-1) (Default = No Clustering).  
 
-3) Check number of reads after each step in the terminal for optimising these variables.
+4) Check number of reads after each step in the terminal for optimising these variables.
 
 NOTE: `EGPL -h` will display the help file  
            `EGPL -c` will display the citation file
