@@ -1,4 +1,6 @@
 # EGgPLant
+https://img.shields.io/badge/version-V1.0-blue
+
 EGgPLant README  
 V1.0
 <pre>
