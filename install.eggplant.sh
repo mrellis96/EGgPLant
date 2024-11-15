@@ -14,7 +14,7 @@ tar -xf EGgPLantV*.tar.xz
 	then
 	echo "Installing scripts (Linux OS)"
 	cd EGgPLant/
-	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
+	chmod +x EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
 	export PATH=$PATH:"$pwd"
 	read -p "Add path to bashrc? (Y/N/C)"
 		if [[ $REPLY =~ ^[Yy]$ ]];
@@ -151,7 +151,7 @@ elif [[ "$(uname)" == "Darwin" ]];
 	then
 	echo "Installing scripts (Mac OS)"
 	cd EGgPLant/
-	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
+	chmod +x EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
 	export PATH=$PATH:"$pwd"
 	read -p "Add path to bashrc? (Y/N/C)"
 		if [[ $REPLY =~ ^[Yy]$ ]];
