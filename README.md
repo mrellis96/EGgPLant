@@ -1,5 +1,5 @@
 # EGgPLant
-https://img.shields.io/badge/version-V1.0-blue
+![Static Badge](https://img.shields.io/badge/:badgeContent)
 
 EGgPLant README  
 V1.0
