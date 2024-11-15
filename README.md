@@ -1,5 +1,5 @@
 # EGgPLant ![Static Badge](https://img.shields.io/badge/version-V1.0-blue)
-### An End-to-end Metabarcoding pipeline by ecologists, for ecologists.  
+### An end-to-end metabarcoding pipeline by ecologists, for ecologists.  
 
 <pre>
             _______________________________
