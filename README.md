@@ -30,7 +30,7 @@ V1.0
            \_______________________________/
 </pre>
 -------------------------------------------------------------------------------------------------------------------------------------------
-EGgPLant has been developed by Morgan Ellis and Owen Holland
+EGgPLant has been developed by Morgan Ellis and Owen Holland.  
 Prefered Citation:
 
 **Requirements:**  
