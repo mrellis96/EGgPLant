@@ -56,7 +56,7 @@ Manual install:
 2) Go to the folder containing the script file and run: `export PATH=$PATH:~/Path/To/Scripts`
 
 -------------------------------------------------------------------------------------------------------------------------------------------
-**eggaqual** - Quality Plot Generator:
+**eggqual** - Quality Plot Generator:
 
 1) Go to the directory where you would like to run the pipeline  
 2) Ensure your fastq.gz are in a subdirectory called "RawFastq' with in the current directory  
