@@ -126,7 +126,7 @@ V0.4.1: Added EGDB and BlastN to EGIP, R now outputs fasta file as 'Results.fa'.
 V0.4.1.1: Name Changed to EGgPLant.  
 V0.4.1.2: Bug Fixes.  
 V0.4.2: Changed install script to install to a local dir. not /usr/bin, Added LCA script, renamed EGPL to eggplant.  
-V0.5.0: Intergrated blast and LCA script in to main eggplant pipeline, depreciated EGIP, improved speed through awk handling.
+V0.5.0: Intergrated blast and LCA script in to main eggplant pipeline, depreciated EGIP, improved speed through awk handling.  
 V1.0: Set public release
 
 -------------------------------------------------------------------------------------------------------------------------------------------
