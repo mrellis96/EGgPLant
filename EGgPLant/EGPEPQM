@@ -33,7 +33,7 @@ tiff('outputs/qPlot_fwd.tiff', units="in", width=8, height=6, res=600, compressi
 plotQualityProfile(QplotF, aggregate = TRUE)
 dev.off()
 
-tiff('outputs/qPlot_rev.tiff', units="in", width=8, height=6, res=600, compression = 'lzw')
+tiff('outputs/qPlot_rev.tiff', units="in", width=8, height=6, res=600, compression = 'lzw',type='cairo')
 plotQualityProfile(QplotR, aggregate = TRUE)
 dev.off()
 
