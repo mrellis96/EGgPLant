@@ -1,7 +1,7 @@
 #!/usr/bin/Rscript
-# EGgPLant Single End Reads Quality Plot - V4.1.2 - Linux OS
+# EGgPLant Single End Reads Quality Plot - V1.0 - Linux OS
 cat("EGgPLant Quality Plot Generator for Single End Reads\n")
-
+.libPaths("~/R/x86_64-pc-linux-gnu-library/4.0/")
 Sys.setenv(R_INSTALL_STAGED = FALSE)
 
 cat("Setting Repository\n")
