@@ -1,7 +1,7 @@
 # Please use the folder NOT the .tar.xz while for the time being -  While blast and the LCA script should now run with eggplant, they have not yet been added to the final outputs file
 # EGgPLant
 EGgPLant README  
-V5
+V1.0
 <pre>
             _______________________________
            /_______________________________\
