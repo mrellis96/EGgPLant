@@ -1,6 +1,5 @@
 # EGgPLant
 ## An End-to-end Metabarcoding pipeline by ecologists, for ecologists  
-![Static Badge](https://img.shields.io/badge/version-V1.0-blue)
 
 <pre>
             _______________________________
@@ -29,6 +28,7 @@
           \\_______________________________//
            \_______________________________/
 </pre>
+![Static Badge](https://img.shields.io/badge/version-V1.0-blue)
 -------------------------------------------------------------------------------------------------------------------------------------------
 EGgPLant has been developed by Morgan Ellis and Owen Holland.  
 Prefered Citation:
