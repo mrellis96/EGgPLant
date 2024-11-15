@@ -36,6 +36,18 @@ while getopts ":q:d:h s" opt; do
         esac
 done
 
+if [ ! -d "$query" ]
+	then
+	echo "ERROR: No query supplied"
+	usage
+        exit
+        else [ ! -d "$db" ]
+        echo "Database name not supplied"
+        usage
+        exit
+fi
+
+
 mkdir "$db"/
 
 #search for query
