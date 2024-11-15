@@ -1,4 +1,5 @@
-# EGgPLant Lowest Common Ancesctor Script - V1.0
+#!/usr/bin/python3.6
+# EGgPLant Lowest Common Ancesctor Script - V5
 from ete3 import NCBITaxa
 import pandas as pd
 import sys
@@ -21,6 +22,14 @@ def extract_kpcofgs(lineage, ranks_order, ncbi):
         kpcofgs.append(taxid if taxid else "")
     return [tid for tid in kpcofgs if tid]  # Filter out empty strings
 
+def clean_column(column):
+    # Find the position of '###' in the column, if it exists
+    if '###' in column:
+        return column.split('###')[0]  # Keep everything before '###'
+    if ';' in column:
+        return column.split(';')[0]
+    return column  # If no '###' found, return the column as is
+
 def find_lowest_common_rank(blast_output_file, mapping_file):
     ncbi = NCBITaxa()
     mapping = parse_taxonomic_mapping(mapping_file)
@@ -29,16 +38,25 @@ def find_lowest_common_rank(blast_output_file, mapping_file):
     with open(blast_output_file, 'r') as blast_file:
         for line in blast_file:
             columns = line.strip().split('\t')
-            query_id, subject_id = columns[0], columns[1]
+            query_id, subject_id, perc_id, qcov = clean_column(columns[0]), clean_column(columns[1]), float(clean_column(columns[2])), float(clean_column(columns[3]))
 
-            if query_id not in sample_data:
-                sample_data[query_id] = []
-            sample_data[query_id].append(subject_id)
+            # Only process if perc_id > 90% and qcov > 95%
+            if perc_id > 80 and qcov > 85:
+                if query_id not in sample_data:
+                    sample_data[query_id] = []
+                sample_data[query_id].append(subject_id)
 
     ranks_order = ['species', 'genus', 'family', 'order', 'class', 'phylum', 'kingdom']
-    ranks_output_order = ['kingdom', 'phylum', 'class', 'order', 'family','genus','species']
+    ranks_output_order = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
 
     for query_id, subject_ids in sample_data.items():
+        # Check if subject_ids list is empty after filtering
+        if not subject_ids:
+            print(f"Error processing Sample {query_id}: no matches found")
+            row_dict = {'Query ID': query_id, 'Lineage.name': "Unassigned", 'Lowest Common Rank': "Unassigned", 'Taxon Name': "Unassigned"}
+            results_dict.append(row_dict)
+            continue  # Skip to the next query
+
         lineage_lists = []
         for subject_id in subject_ids:
             if subject_id in mapping:
@@ -49,15 +67,12 @@ def find_lowest_common_rank(blast_output_file, mapping_file):
                     lineage_lists.append(kpcofgs_lineage)
                 except Exception as e:
                     print(f"Error processing Sample {query_id}: {e}")
-                    #row_dict = {'Query ID' : query_id,'Lineage.name' : "Unassigned", 'Lowest Common Rank' : "Unassigned", 'Taxon Name' : "Unassigned"}
-                    #results_dict.append(row_dict)
 
         if not lineage_lists:
             print(f"Query ID: {query_id}")
             print("No valid subject IDs found\n")
-            row_dict = {'Query ID' : query_id,'Lineage.name' : "Unassigned", 'Lowest Common Rank' : "Unassigned", 'Taxon Name' : "Unassigned"}
+            row_dict = {'Query ID': query_id, 'Lineage.name': "Unassigned", 'Lowest Common Rank': "Unassigned", 'Taxon Name': "Unassigned"}
             results_dict.append(row_dict)
-
             continue
 
         common_ranks = {}
@@ -87,7 +102,7 @@ def find_lowest_common_rank(blast_output_file, mapping_file):
 
             print(f"Query ID: {query_id}")
             print(f"Lowest Common Rank: {lowest_common_rank}: {common_rank_taxa}")
-            row_dict = {'Query ID' : query_id,'Lineage.name' : kpcofgs_names_list, 'Lowest Common Rank' : lowest_common_rank, 'Taxon Name' : common_rank_taxa}
+            row_dict = {'Query ID': query_id, 'Lineage.name': kpcofgs_names_list, 'Lowest Common Rank': lowest_common_rank, 'Taxon Name': common_rank_taxa}
             results_dict.append(row_dict)
 
 
@@ -95,7 +110,7 @@ result_df = pd.DataFrame(columns=['Query ID', 'Lineage.name', 'Lowest Common Ran
 results_dict = []
 find_lowest_common_rank(blast_output_file, mapping_file)
 result_df =pd.DataFrame.from_dict(results_dict)
-result_df.to_csv("LCA.out", index=False)
+result_df.to_csv("outputs/LCA.csv", index=False, sep=',')
 
 print("")
-print("Please Check LCA.out")
+print("Please Check LCA.csv")

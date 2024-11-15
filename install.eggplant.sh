@@ -1,7 +1,9 @@
 #!/bin/bash
 #EGgPLant install Scrip V1.0
 echo "Thank you for choosing EGgPLant"
-echo "The pipeline will now be installed including all programs such as R, Vim, NCBI-Blast etc."
+echo "The pipeline will now be installed including all dependencies such as R, Vim, NCBI-Blast etc."
+echo "On macOS this will also download and install homebrew, which will be used to insall dependencies" 
+echo ""
 read -p "Do you want to continue? (Y/N/C) "
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]] || exit -1
@@ -12,7 +14,7 @@ tar -xf EGgPLantV*.tar.xz
 	then
 	echo "Installing scripts (Linux OS)"
 	cd EGgPLant/
-	#chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ
+	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
 	export PATH=$PATH:"$pwd"
 	read -p "Add path to bashrc? (Y/N/C)"
 		if [[ $REPLY =~ ^[Yy]$ ]];
@@ -149,7 +151,7 @@ elif [[ "$(uname)" == "Darwin" ]];
 	then
 	echo "Installing scripts (Mac OS)"
 	cd EGgPLant/
-	#chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ
+	chmod 777 EGPL EGPLQ EGDB EGPEP EGSEP EGSEPQ EGPEPQ EGIP .EGS
 	export PATH=$PATH:"$pwd"
 	read -p "Add path to bashrc? (Y/N/C)"
 		if [[ $REPLY =~ ^[Yy]$ ]];
@@ -240,6 +242,21 @@ elif [[ "$(uname)" == "Darwin" ]];
            	else
         	echo    "Installed"
 	fi
+	echo "gcut"
+     	which gcut &> /dev/null  
+    	if [ $? -ne 0 ]
+        	then
+            	echo "Not installed"  
+           	which brew &> /dev/null 
+           	if [ $? -ne 0 ]
+           		then
+			echo "Installing Homebrew (Required to install packages)"
+			-c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+           	fi
+           	brew install coreutils          	
+           	else
+        	echo    "Installed"
+	fi
 fi
 echo "EGgPLant and all dependacies are now installed"
-echo "Please read the readme (EGgPLant_README.txt) found in "$cwd" before use"
+echo "Please read the readme (EGPL_README.txt) found in "$cwd" before use"
