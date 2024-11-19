@@ -1,14 +1,14 @@
 #!/bin/bash
 # EGgPLant Quality Plot
-echo "EGgPLant V4.1.2- Developed by Owen Holland and Scripted by Morgan Ellis"
+echo "EGgPLant Qaulity Plots V1.0 by Morgan Ellis and Owen Holland"
 
 usage()
 {
 echo
 echo "EcoGenetics Lab Pipeline Quality Plot Generator"
 echo 
-echo "Usage: EGPLQ -d [-h]"
-echo "Example: EGPLQ -d RawFastq"
+echo "Usage: eggqual -d [-h]"
+echo "Example: eggqual -d RawFastq"
 echo "Options:"
 echo "d     Directory - Directory where the raw reads are stored"
 echo "h     Help - Displays help readout"
@@ -36,7 +36,7 @@ which R &> /dev/null
      	
 if [ $? -ne 0 ]
 	then
-	echo "R not found. Please install R or run EGPL install script (EGPL.Inst.sh) before continuing"
+	echo "R not found. Please install R or run eggplant install script (install.eggplant.sh) before continuing"
 	exit
 fi
 

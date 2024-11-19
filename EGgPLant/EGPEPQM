@@ -1,5 +1,5 @@
 #!/usr/local/bin/Rscript
-#EGgPLant Paired End Reads Quality Plot - V4.1.2 - Mac OS
+#EGgPLant Paired End Reads Quality Plot - V1.0- Mac OS
 cat("EGgPLant Quality Plot Generator for Paired End Reads\n")
 
 Sys.setenv(R_INSTALL_STAGED = FALSE)
@@ -29,11 +29,11 @@ QplotR <- sort(list.files(pathR, pattern="fastq.gz", full.names = TRUE))
 
 cat("If you get two messages below saying null device 1, success!\nCheck the outputs directory for the quality plots.\n")
 
-tiff('outputs/qPlot_fwd.tiff', units="in", width=8, height=6, res=600, compression = 'lzw')
+tiff('outputs/qPlot_fwd.tiff', units="in", width=8, height=6, res=600, compression = 'lzw',type='cairo')
 plotQualityProfile(QplotF, aggregate = TRUE)
 dev.off()
 
-tiff('outputs/qPlot_rev.tiff', units="in", width=8, height=6, res=600, compression = 'lzw')
+tiff('outputs/qPlot_rev.tiff', units="in", width=8, height=6, res=600, compression = 'lzw',type='cairo')
 plotQualityProfile(QplotR, aggregate = TRUE)
 dev.off()
 

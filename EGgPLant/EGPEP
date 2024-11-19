@@ -1,5 +1,5 @@
 #!/usr/bin/Rscript
-#EGgPLant Paired End Reads - V4.1.2 - Linux OS
+#EGgPLant Paired End Reads - V1.0 - Linux OS
 cat("EGgPLant for Paired End Reads\n")
 .libPaths("~/R/x86_64-pc-linux-gnu-library/4.0/")
 Sys.setenv(R_INSTALL_STAGED = FALSE) 
@@ -38,11 +38,12 @@ cat("Assigning Pathways\n")
 pathF <- "forward/" 
 pathR <- "reverse/" 
 
-filtpathF <- file.path(pathF, "filtered") # Filtered forward files go into the pathF/filtered/ subdirectory
-filtpathR <- file.path(pathR, "filtered") # ...
-# Identifies your forward reads
+#Filter and identify reads
+filtpathF <- file.path(pathF, "filtered") 
+filtpathR <- file.path(pathR, "filtered") 
+
 fastqFs <- sort(list.files(pathF, pattern="fastq.gz"))
-# Identifies your reverese reads
+
 fastqRs <- sort(list.files(pathR, pattern="fastq.gz"))
 
 cat("Trimming and Filtering Sequences\n")

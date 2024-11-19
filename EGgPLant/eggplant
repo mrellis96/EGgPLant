@@ -1,0 +1,434 @@
+#!/bin/bash
+# EGgPLant
+echo "EGgPLant V1.0 - By Morgan Ellis and Owen Holland"
+
+usage()
+{
+echo
+echo "EcoGenetics Lab Pipeline for Demupltiplexing Sequences"
+echo 
+echo "Usage: eggplant -d [-f] [-r] [-l] [-p] [-t] [-y] [-n] [-m] [-o] [-b] [-v] [-c] [-h]"
+echo "Example: eggplant -d RawFastq -f ATCG -r CTAG -p G -t 280 -y 250 -l 10 -m 10 -o 0.99 -b BlastDatabase -v TaxMap.txt"
+echo "Options:"
+echo "d     Directory - The Directory where the raw reads are stored"
+echo "f     Forward Primer - The sequence of the Forward Primer for Cutadapt to remove"
+echo "r     Reverse Primer - The sequence of the Reverse Primer for Cutadapt to remove"
+echo "l     Minimum Overlap - The minimum number of basepair overlap between the Primer and the returned sequence before cutadapt will recognise the primer"
+echo "p     Poly Tails - Tells Cutadapt to remove ploy tails. Add letter for basepair to remove"
+echo "t     Truncate - Where you would like filterAndTrim to truncate the sequences (Default= No truncation). Must be positive interger"
+echo "y     Truncate Reverse Read - IF PAIRED END, where you would like filterAndTrim to truncate the reverse reads (Default=No Truncation). Must be positive interger"
+echo "n     Minimum Read Length - Remove reads with length less than [n] (Default=20)"
+echo "m     Minimum Number of Reads - Minimum number of reads per sequences allowed after chimera removal (Default 10). Must be positive interger"
+echo "b		Blast Database - Database to BLAST output sequences against. Must be BLASTn formated database (see EGDB)"
+echo "v		Taxanomic Map - Path to taxanomic mapping file for Blast Database to pass to LCA script"
+echo "o     Cluster ASV in to OTUs based on similarity (0-1) (Default = No Clustering)"
+echo "c     Citations - Citations from the various programs/packages used"
+echo "h     Help - Displays help readout"
+}
+
+citation()
+{ 
+echo
+echo "EGgPLant"
+echo "Ellis MR, and Holland OJ, 2024, EGgPLant bioinformatics pipeline, https://github.com/mrellis96/EGgPLant, DOI"
+echo
+echo "EGgPLant would not have been possible without the following packages, please remember to include their citations"
+echo
+echo "Cutadapt"
+echo "Martin M (2011) Cutadapt removes adapter sequences from high-throughput sequencing reads. EMBnet journal 17:10-12"
+echo
+echo "R base"
+echo "R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/."
+echo
+echo "dada2"
+echo "Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJA, Holmes SP (2016). “DADA2: High-resolution sample inference from Illumina amplicon data.” Nature Methods, 13, 581-583. doi: 10.1038/nmeth.3869 (URL: https://doi.org/10.1038/nmeth.3869)."
+echo
+echo "vSearch"
+echo "Rognes, T., Flouri, T., Nichols, B., Quince, C. and Mahé, F., 2016. VSEARCH: a versatile open source tool for metagenomics. PeerJ, 4, p.e2584."
+echo 
+echo "blast+"
+echo "Camacho, C., Coulouris, G., Avagyan, V., Ma, N., Papadopoulos, J., Bealer, K., and Madden, T.L. 2009. BLAST+: architecture and applications. BMC Bioinformatics, 10, 421."
+} 
+
+while getopts ":d:f:r:p:t:y:l:n:m:b:v:o:c h s" opt; do
+        case $opt in
+        d) raw="${OPTARG}"
+		raw="${raw%/}"  # Strip any trailing slash
+        ;;
+        f) fwdp="${OPTARG}"
+        ;;
+        r) revp="${OPTARG}"
+        ;;
+        p) poly="${OPTARG}"
+        ;;
+        t) fwdT="${OPTARG}"
+        ;;
+        y) revT="${OPTARG}"
+        ;;
+        l) minO="${OPTARG}"
+        ;;
+        n) minS="${OPTARG}"
+        ;;
+        m) minR="${OPTARG}"
+        ;;
+		b) bla="${OPTARG}"
+		;;
+		v) tmap="${OPTARG}"
+		;;
+        o) otu="${OPTARG}"
+        ;;
+        c) citation
+        exit
+        ;;
+        h) usage
+        exit
+		;;
+        \?) echo 
+        echo "Invalid Option. Please check the command and try again"
+        usage
+        exit
+        ;;
+        esac
+done
+
+which R &> /dev/null  	
+if [ $? -ne 0 ]
+	then
+	echo "R not found. Please install R or run EGPL install script (EGPL.Inst.sh) before continuing"
+	exit
+fi
+	
+#Check if raw Dir exists
+if [ ! -d "$raw" ]
+	then
+	echo "ERROR: Directory '$raw' Does Not Exist"
+	exit
+fi
+
+if [ -d "outputs/" ]; then
+    echo
+	echo "The 'outputs' directory already exists. Do you want to overwrite it (recomended)? (y/n)"
+    read overwrite_out
+    if [[ $overwrite_out =~ ^[Yy]$ ]]; then
+        rm -r outputs  # Remove the existing directory
+        mkdir outputs || { echo "Failed to create outputs directory"; exit 1; }  # Create a new one
+    else
+        echo "Skipping overwriting 'outputs' directory."
+    fi
+else
+    mkdir outputs || { echo "Failed to create outputs directory"; exit 1; }  # Create the outputs directory if it doesn't exist
+fi
+
+#poly tails
+if  [ ! $poly == "" ]
+	then
+	if [ -d "${raw}_Poly/" ]; then
+    	echo
+		echo "The '${raw}_Poly' directory already exists. Do you want to overwrite it (recomended)? (y/n)"
+    	read overwrite_poly
+    	if [[ $overwrite_poly =~ ^[Yy]$ ]]; then
+        	rm -r "$raw"_Poly/  # Remove the existing directory
+        	mkdir "$raw"_Poly/ || { echo "Failed to create '${raw}_Poly/' directory"; exit 1; }  # Create a new one
+    	else
+        	echo "Skipping overwriting '${raw}_Poly/' directory."
+    	fi
+	else
+    	mkdir "$raw"_Poly/ || { echo "Failed to create '${raw}_Poly/' directory"; exit 1; } # Create the raw_poly directory if it doesn't exist
+	fi
+	cd $raw
+	for i in *.fastq.gz; 
+	do SAMPLE=$(echo ${i} | sed "s/.fastq\.gz//") ; 
+	cutadapt -j 8 -O 6 -a "$poly""$poly""$poly""$poly""$poly""$poly" -o ../"$raw"_Poly/${SAMPLE}.fastq.gz ${SAMPLE}.fastq.gz;
+	done
+	cd ../
+	raw="${raw}_Poly"	
+fi
+
+# Remove Primers
+
+if [ ! $fwdp == "" ]
+	then
+	if  [ ! $revp == "" ]
+		then #Paired
+		if [ -d "${raw}_Trimmed/" ]; then
+    		echo
+			echo "The '"$raw"_Trimmed' directory already exists. Do you want to overwrite it (recomended)? (y/n)"
+    		read overwrite_Trim
+    		if [[ $overwrite_Trim =~ ^[Yy]$ ]]; then
+        		rm -r "$raw"_Trimmed  # Remove the existing directory
+        		mkdir "$raw"_Trimmed || { echo "Failed to create '{$raw}_Trimmed/' directory"; exit 1; } # Create a new one
+    		else
+        		echo "Skipping overwriting '${raw}_Trimmed/' directory."
+    		fi
+		else
+    		mkdir "$raw"_Trimmed || { echo "Failed to create '"$raw"_Trimmed/' directory"; exit 1; } # Create the raw_Trimmed directory if it doesn't exist
+		fi
+		cd $raw
+		for i in *_R1_001.fastq.gz; 
+		do SAMPLE=$(echo ${i} | sed "s/_R1_\001\.fastq\.gz//") ; 
+		cutadapt -j 8 -m $minS -O $minO -e 0.1 -g "$fwdp" -G "$revp" --trimmed-only -o ../"$raw"_Trimmed/${SAMPLE}_R1_001.fastq.gz -p ../"$raw"_Trimmed/${SAMPLE}_R2_001.fastq.gz ${SAMPLE}_R1_001.fastq.gz ${SAMPLE}_R2_001.fastq.gz;
+		done 
+		cd ../
+		raw="${raw}_Trimmed"
+	else #Single
+		if [ -d "'$raw'_Trimmed/" ]; then
+    		echo
+			echo "The '"$raw"_Trimmed' directory already exists. Do you want to overwrite it (recomended)? (y/n)"
+    		read overwrite_Trim
+    		if [[ $overwrite_Trim =~ ^[Yy]$ ]]; then
+        		rm -r "$raw"_Trimmed  # Remove the existing directory
+        		mkdir "$raw"_Trimmed || { echo "Failed to create '"$raw"_Trimmed/' directory"; exit 1; } # Create a new one
+    		else
+        		echo "Skipping overwriting '"$raw"_Trimmed/' directory."
+    		fi
+		else
+    		mkdir "$raw"_Trimmed || { echo "Failed to create '"$raw"_Trimmed/' directory"; exit 1; } # Create the raw_Trimmed directory if it doesn't exist
+		fi
+		cd $raw
+		for i in *_R1_001.fastq.gz; 
+		do SAMPLE=$(echo ${i} | sed "s/_R1_\001\.fastq\.gz//") ; 
+		cutadapt -j 8 -m $minS -O $minO -e 0.1 -g "$fwdp" --trimmed-only -o ../"$raw"_Trimmed/${SAMPLE}_R1_001.fastq.gz ${SAMPLE}_R1_001.fastq.gz;
+		done 
+		cd ../
+		raw=""$raw"_Trimmed"	
+	fi	
+fi
+
+#Check if "forward" directory exists, if present skip sorting step
+if [ -d "forward/" ]; then
+    echo
+	echo "The 'forward' directory already exists. Do you want to overwrite it? (y/n)"
+    read overwrite_fwd
+    if [[ $overwrite_fwd =~ ^[Yy]$ ]]; then
+        rm -r forward  # Remove the existing directory
+        mkdir forward || { echo "Failed to create forward directory"; exit 1; } # Create a new one
+    else
+        echo "Skipping overwriting 'forward' directory."
+    fi
+else
+    mkdir forward || { echo "Failed to create forward directory"; exit 1; } # Create the forward directory if it doesn't exist
+fi
+cp "$raw"/*R1_001.fastq.gz forward/
+
+# Check if reverse reads exist and if the "reverse" directory exists
+count=$(ls -1 "$raw"/*R2_001.fastq.gz 2>/dev/null | wc -l)
+if [ $count != 0 ]; then
+    if [ -d "reverse/" ]; then
+        echo
+		echo "The 'reverse' directory already exists. Do you want to overwrite it? (y/n)"
+        read overwrite_rev
+        if [[ $overwrite_rev =~ ^[Yy]$ ]]; then
+            rm -r reverse  # Remove the existing directory
+            mkdir reverse || { echo "Failed to create reverse directory"; exit 1; } # Create a new one
+        else
+            echo "Skipping overwriting 'reverse' directory."
+        fi
+    else
+        mkdir reverse || { echo "Failed to create reverse directory"; exit 1; } # Create the reverse directory if it doesn't exist
+    fi
+    cp "$raw"/*R2_001.fastq.gz reverse/  # Copy reverse reads if available
+fi
+
+#Checks if seqs are paired ends and run relevant script
+if [[ "$(uname)" == "Linux" ]];
+	then
+	read -p "Are the sequences PAIRED END READS (Y/N/C)?"
+	echo    # (optional) move to a new line
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		EGPEP --fwdT $fwdT --revT $revT --minR $minR || { echo "Failed initialise de-replicaiton pipeline"; exit 1; }
+	elif [[ $REPLY =~ ^[Nn]$ ]]; then
+		EGSEP --fwdT $fwdT --minR $minR || { echo "Failed initialise de-replicaiton pipeline"; exit 1; }
+	elif [[ $REPLY =~ ^[Cc]$ ]]; then
+		exit
+	fi
+elif [[ "$(uname)" == "Darwin" ]];
+	then
+	read -p "Are the sequences PAIRED END READS (Y/N/C)?" 
+	echo    # (optional) move to a new line
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		EGPEPM --fwdT $fwdT --revT $revT --minR $minR || { echo "Failed initialise de-replicaiton pipeline"; exit 1; }
+	elif [[ $REPLY =~ ^[Nn]$ ]]; then
+		EGSEPM --fwdT $fwdT --minR $minR || { echo "Failed initialise de-replicaiton pipeline"; exit 1; }
+	elif [[ $REPLY =~ ^[Cc]$ ]]; then
+		exit
+	fi
+fi
+
+if [[ ! -f "outputs/Pipeline_Results.csv" ]];
+	then
+	echo 
+	echo "ERROR"
+	echo "Check R output above and try again"
+	exit
+fi
+awk -F, '
+    FNR==1 {
+        # Process the header row
+        getline header < "outputs/Pipeline_Results.csv";  # Get the header of the file
+        gsub(/^[ \t,]*/, "", header);  # Remove leading spaces or commas from the header
+        print "ASV," substr(header, index(header, $2));  # Print the header without the first column
+        next
+    }
+    {
+        # Print ASV label dynamically for each data row
+        printf "ASV"FNR-1",";
+
+        # Loop through remaining fields starting from $2 to $NF, preserving commas
+        for (i=2; i<=NF; i++) {
+            printf "%s", $i;  # Print the current field
+            if (i < NF) {
+                printf ",";  # Add a comma between fields
+            }
+        }
+        print "";  # Move to the next line
+    }
+' outputs/Pipeline_Results.csv > outputs/Pipeline_Results.tmp;
+rm outputs/Pipeline_Results.csv;
+mv outputs/Pipeline_Results.tmp outputs/Pipeline_Results.csv
+
+if [ $otu > 0 ]
+then
+	echo "Clustering ASV to OTU"
+	vsearch --cluster_size outputs/*.fa \
+	--id "$otu" \
+	--strand plus \
+	--sizein \
+	--sizeout \
+	--fasta_width 0 \
+	--relabel OTU_ \
+	--centroids outputs/OTU.fasta \
+	--otutabout outputs/OTU.txt \
+	
+	echo "Formatting OTU table"
+	totcol=$(head -1 outputs/OTU.txt | awk -F"\t" '{print NF}')
+	# Use a single awk command to process the whole file
+	awk -F"\t" -v totcol="$totcol" '
+	BEGIN {
+	    OFS = ","
+	}
+	{
+    	if (NR == 1) {
+        	# Capture the header row
+        	for (i = 2; i <= totcol; i++) {
+        	    header[i] = $i
+    	    }
+    	} else {
+    	    # For each subsequent row, process the OTUs
+    	    otu[$1] = $1
+    	    for (i = 2; i <= totcol; i++) {
+    	        if ($i == "1") {
+    	            if (length(otu[i]) == 0) {
+    	                otu[i] = $1
+        	        } else {
+            	        otu[i] = otu[i] "_" $1
+            	    }
+        	    }
+    	    }
+    	}
+	}
+	END {
+    	# Print the header row for CSV: ASV,OTU
+    	print "ASV,OTU"
+    	for (i = 2; i <= totcol; i++) {
+    	    print header[i] "," otu[i]
+    	}
+	}' outputs/OTU.txt > outputs/OTU.ASV.csv
+	
+	awk -F',' '
+    	# Process the header of Pipeline_Results.csv
+    	NR==1 { otu_header=$0; next }  # Store the header of otu.csv
+  		FNR==1 {
+    	    getline pipeline_header < "outputs/Pipeline_Results.csv";  # Read the header from Pipeline_Results.csv
+    	    print "OTU," pipeline_header;  # Print new header with "OTU"
+    	    next;  # Move to the next line
+    	}
+
+    	# Read the OTU.ASV.csv file into a hash table (without assuming a header)
+    	NR==FNR && FNR>1{ 	
+
+    	    otu[$1] = $2;  # Store the corresponding OTU in a hash table, indexed by ASV
+        	next;  # Move to the next line
+    	}
+	    # Process the Pipeline_Results.csv file
+    	{
+        	if ($1 in otu) {
+        	    # If the ASV exists in otu, print the OTU followed by the current line from Pipeline_Results.csv
+        	    print otu[$1] "," $0;  
+        	} else {
+				print "Unassigned," $0;  # Print "Unassigned" for all ASV info columns
+        	}
+    	}
+	' outputs/OTU.ASV.csv outputs/Pipeline_Results.csv > outputs/OTU_Results.csv
+	
+	#replace this with owens sumif
+	#
+	#
+	#
+
+
+	echo "OTU readcount in OTU_Results.csv"
+fi
+if  [ ! $bla == "" ]
+	then
+	if [ $otu > 0 ]
+		then
+		echo "Taxaomic Assignment"
+		blastn -query outputs/OTU.fasta -db $bla -outfmt "6 qseqid sseqid pident qcovs" -out outputs/blast.out || { echo "Failed to blast sequences"; exit 1; }
+		pypath=`which eggplant | sed 's|\(^.*\)eggplant$|\1|'`
+		python3 ${pypath}/lca.py outputs/blast.out $tmap || { echo "Failed to assign LCA"; exit 1; }
+		#awk -F, '{gsub(/^[ \t]*/, "", $0); print}' < Pipeline_Results.csv #this peice of code is a temp fix and can probalby be intergrated better if using a sinlge awk code above or below
+		awk -F, '
+   		NR==1 { lca_header=$0; next }  # Store the header of LCA.csv
+  		FNR==1 { 
+       		getline otu_header < "outputs/OTU_Results.csv";  # Get the header of OTU_Results.csv
+       		gsub(/^[ \t,]*/, "", otu_header);  # Remove leading spaces or commas from otu_header
+       		print lca_header ",OTU,ASV," otu_header;  # Print both headers with "OTU" and "ASV" in between
+      		 next
+   		}
+   		NR==FNR && FNR>1 { 
+     		gsub(/\r/, "", $1); 
+     		lca[$1]=$0;  # Store the rest of the lines in LCA.csv
+     		next 
+  		}
+  		{
+     		if ($1 in lca) {
+     		    print lca[$1] "," $0;  # Print LCA info followed by the current line from OTU_Results.csv
+     			} else {
+     		       print "Unassigned,Unassigned,Unassigned,Unassigned," $0;  # If no match in LCA, print "unassigned" for all LCA info columns
+    		    }
+   		}
+		' outputs/LCA.csv outputs/OTU_Results.csv >outputs/OTU_Taxa.csv
+		echo "Taxanomic assignement and readcount can be found in outputs/OTU_Taxa.csv"
+	else
+	echo "Taxaomic Assignment"
+	blastn -query outputs/Results.fa -db $bla -outfmt "6 qseqid sseqid pident qcovs" -out outputs/blast.out || { echo "Failed to blast sequences"; exit 1; }
+	pypath=`which eggplant | sed 's|\(^.*\)eggplant$|\1|'`
+	python3 ${pypath}/lca.py outputs/blast.out $tmap || { echo "Failed assign LCA"; exit 1; }
+	#awk -F, '{gsub(/^[ \t]*/, "", $0); print}' < Pipeline_Results.csv #this peice of code is a temp fix and can probalby be intergrated better if using a sinlge awk code above or below
+	awk -F, '
+   		NR==1 { lca_header=$0; next }  # Store the header of LCA.csv
+  		FNR==1 { 
+       		getline otu_header < "outputs/Pipeline_Results.csv";  # Get the header of Pipeline_Results.csv
+       		gsub(/^[ \t,]*/, "", otu_header);  # Remove leading spaces or commas from otu_header
+       		print lca_header ",ASV," otu_header;  # Print both headers with "OTU" and "ASV" in between
+      		 next
+   				}
+   		NR==FNR && FNR>1 { 
+     		gsub(/\r/, "", $1); 
+     		lca[$1]=$0;  # Store the rest of the lines in LCA.csv
+     		next 
+  						}	
+  		{
+     		if ($1 in lca) {
+     		    print lca[$1] "," $0;  # Print LCA info followed by the current line from Pipeline_Results.csv
+     			} else {
+     		       print "Unassigned,Unassigned,Unassigned,Unassigned," $0;  # If no match in LCA, print "unassigned" for all LCA info columns
+    		}
+		
+   		}
+		' outputs/LCA.csv outputs/Pipeline_Results.csv > outputs/Taxa_Results.csv
+	echo "Taxanomic assignement and readcount can be found in outputs/Taxa_Results.csv"
+	fi
+fi
+echo 
+echo "Thank you for using EGgPLant, please remember to cite this and all other packages used in the pipeline (see eggplant -c)."
