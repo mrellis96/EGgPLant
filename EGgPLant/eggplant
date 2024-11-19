@@ -82,9 +82,6 @@ while getopts ":d:f:r:p:t:y:l:n:m:b:v:o:c h s" opt; do
         ;;
         h) usage
         exit
-        ;;
-		s) .EGS
-		exit
 		;;
         \?) echo 
         echo "Invalid Option. Please check the command and try again"
