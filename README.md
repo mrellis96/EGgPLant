@@ -1,4 +1,4 @@
-# EGgPLant ![Static Badge](https://img.shields.io/badge/version-V1.0-blue) ![Static Badge](https://img.shields.io/badge/DOI-waiting_on_release-red)
+# EGgPLant ![Static Badge](https://img.shields.io/badge/version-V1.0-blue) [![DOI](https://zenodo.org/badge/360321933.svg)](https://doi.org/10.5281/zenodo.14183828)
 ### An end-to-end metabarcoding pipeline by ecologists, for ecologists.  
 
 <pre>
@@ -31,7 +31,7 @@
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 EGgPLant has been developed by Morgan Ellis and Owen Holland.  
-Prefered Citation:
+Prefered Citation: Ellis, M. R. and Holland, O. J. (2024) ‘EGgPLant: An end-to-end metabarcoding pipeline by ecologists, for ecologists.’. Zenodo. doi: 10.5281/zenodo.14183829.
 
 **Requirements:**  
 Linux OS (including WSL on Windows) or Mac OS  
