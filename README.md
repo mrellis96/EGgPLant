@@ -1,4 +1,4 @@
-# EGgPLant ![Static Badge](https://img.shields.io/badge/version-V1.0-blue) [![DOI](https://zenodo.org/badge/360321933.svg)](https://doi.org/10.5281/zenodo.14183828)
+# EGgPLant [![Static Badge](https://img.shields.io/badge/version-V1.0-blue)](https://github.com/mrellis96/EGgPLant/releases/tag/V1.0) [![DOI](https://zenodo.org/badge/360321933.svg)](https://doi.org/10.5281/zenodo.14183828)
 ### An end-to-end metabarcoding pipeline by ecologists, for ecologists.  
 
 <pre>
