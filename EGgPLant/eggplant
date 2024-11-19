@@ -1,6 +1,6 @@
 #!/bin/bash
 # EGgPLant
-echo "EGgPLant V1.0 - By Owen Holland and Morgan Ellis"
+echo "EGgPLant V1.0 - By Morgan Ellis and Owen Holland"
 
 usage()
 {

@@ -1,5 +1,5 @@
 #!/usr/bin/python3.6
-# EGgPLant Lowest Common Ancesctor Script - V5
+# EGgPLant Lowest Common Ancesctor Script - V1.0
 from ete3 import NCBITaxa
 import pandas as pd
 import sys
