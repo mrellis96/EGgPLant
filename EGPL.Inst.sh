@@ -7,7 +7,7 @@ echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]] || exit -1
 then
 echo "Unzipping"
-tar -xf EGgPLantV*.tar.gz
+tar -xf EGgPLantV*.tar.xz
 if [[ "$(uname)" == "Linux" ]];
 	then
 	echo "Installing scripts (Linux OS)"
