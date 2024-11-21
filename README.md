@@ -1,33 +1,6 @@
-# EGgPLant [![Static Badge](https://img.shields.io/badge/version-V1.0-blue)](https://github.com/mrellis96/EGgPLant/releases/tag/V1.0) [![DOI](https://zenodo.org/badge/360321933.svg)](https://doi.org/10.5281/zenodo.14183828)
+# EGgPLant [![Static Badge](https://img.shields.io/badge/version-V1.0-blue)](https://github.com/mrellis96/EGgPLant/releases/tag/V1.0) [![DOI](https://zenodo.org/badge/360321933.svg)](https://doi.org/10.5281/zenodo.14183828) <img src="eggplantlogo.png" align="right" height="150"/></a>
 ### An end-to-end metabarcoding pipeline by ecologists, for ecologists.  
 
-<pre>
-            _______________________________
-           /_______________________________\
-          //                               \\
-         //                         ▒▒      \\
-        //                          ▒▒       \\
-       //                         ▒▒          \\
-      //                      ░░░░▒▒░░         \\
-     //                     ░░░░░░░░░░          \\
-    //                      ░░░░░░░░░░           \\
-   //                       ▒▒░░░░░░░░░           \\
-  //                      ▒▒▒▒▒▒▒▒░░▒▒░░           \\
- //                      ▒▒▒▒▒▒▒▒▒▒▒▒▒              \\
-//                      ▒▒▒▒▒▒▒▒▒▒▒▒                 \\
-\\                      ▒▒▒▒▒▒▒▒▒▒▒▒                 //
- \\                   ▒▒▒▒▒▒▒▒▒▒▒▒▒▒                //
-  \\                  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒               //
-   \\               ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒              //
-    \\            ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒               //
-     \\           ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒              //
-      \\          ▒▒▒▒▒▒▒▒▒▒▒▒▒▒               //
-       \\         ▒▒▒▒▒▒▒▒▒▒▒▒▒▒              //
-        \\        ▒▒▒▒▒▒▒▒▒▒▒▒               //
-         \\         ▒▒▒▒▒▒▒▒                //
-          \\_______________________________//
-           \_______________________________/
-</pre>
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 EGgPLant has been developed by Morgan Ellis and Owen Holland.  
@@ -81,8 +54,8 @@ eggplant - Main Pipeline:
        -y: IF PAIRED END, where you would like filterAndTrim to truncate the reverse reads (Default=No Truncation).  
        -n: Remove reads with length less than [n] BP (Default = 20).  
        -m: Minimum number of reads per sequences allowed after chimera removal (Default = 10).  
-       -b: Blast Database - Database to BLAST output sequences against. Must be BLASTn formatted database (see EGDB)  
-       -v: Taxonomic Map - Path to taxonomic mapping file for Blast Database to pass to LCA script  
+       -b: Blast Database - Database to BLAST output sequences against. Must be BLASTn formatted database (see EGDB)  
+       -v: Taxonomic Map - Path to taxonomic mapping file for Blast Database to pass to LCA script  
        -o: Cluster ASV in to OTU. ASVs will be clustered in to OTUs based on the similarity value (0-1) (Default = No Clustering).  
 
 4) Check number of reads after each step in the terminal for optimising these variables.
