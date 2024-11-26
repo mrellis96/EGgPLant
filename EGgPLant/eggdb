@@ -5,30 +5,51 @@ echo "EGgPLant Database Creator V1.0 by Morgan Ellis and Owen Holland"
 usage()
 {
 echo
-echo "EcoGenetics Lab Pipeline Quality Plot Generator"
-echo 
-echo "Usage: eggdb -q -d [-h]"
-echo "Example: eggdb -q 'COI[All Fields] AND Asterias amurensis [Organism]' -d 'AsteriasDB'"
+echo "EGgPLant Database Creator V1.0.1"
+echo
+echo "Usage: eggdb -g -o -f -r -a -c -d [-h]  OR eggdb -q -f -r -a -c -d [-h]"
+echo "Example: eggdb -g COI -o Echinodermata -f GGTCAACAAATCATAAAGATATTGG -r TAAACTTCAGGGTGACCAAAAAATCA -a 10 -c custom.fasta -d 'EchinodermCOI'"
+echo "OR"
+echo "Example: eggdb -q 'COI[All Fields] AND Echinodermata [Organism]' -f GGTCAACAAATCATAAAGATATTGG -r TAAACTTCAGGGTGACCAAAAAATCA -a 10 -c custom.fasta -d 'EchinodermCOI'"
 echo "Options:"
-echo "q     Query - The desired query to search. To get the correct syntax for the query, go to the NCBI site and perform the desired search. The query must be enclosed with quotation marks. If you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotaion marks"
-echo "d     Database Name- The name for the database. NOTE: Spaces are not accepted."
-echo "h     Help - Displays help readout"
+echo "g Gene region - Target gene region for the query. e.g. 16S, 18S, COI, etc"
+echo "o Organism - Taxonomic group to limit the database to. e.g. Mammalia, Aves, Echinodermata, etc. NOTE: It may be helpful to validate that your naming convention for your target taxonomic group matches the nomenclature used in the NCBI Taxonomy database."
+echo "q Query - Full search query using NCBI's search syntax. To get the correct syntax for the query, go to the NCBI site and perform the desired search, and copy the text from the 'Search details' box on the right. The query must be enclosed with quotation marks OR if you have double quotation marks WITHIN the query the query MUST be enclosed with SINGLE quotaion marks. This method is recommended if you have a search query with spaces."
+echo "f Forward primer - Forward primer sequence for excising the target marker from downloaded sequences"
+echo "r Reverse primer - Reverse primer sequence for excising the target marker from downloaded sequences"
+echo "a Alignment overlap - Number of base pairs required for primer detection and removal (about 50%-75% of your shortest primer length is recommended)."
+echo "c Custom sequences - Custom sequences in fasta format to add to the database. Ensure headers are written as '>Genus_species'"
+echo "d Database Name - The name for the database. NOTE: Spaces are not accepted."
+echo "h Help - Displays help readout"
 }
 
+### Proabably should check to ensure I've put the colons in the right spot here.
 #pass options
-while getopts ":q:d:h s" opt; do
+while getopts ":g:o:q:f:r:a:c:d:h s" opt; do
         case $opt in
+        g) gene="${OPTARG}"
+        ;;
+        o) org="${OPTARG}"
+        ;;
         q) query="${OPTARG}"
         ;;
-        d) db="$OPTARG"
+        f) fwd="${OPTARG}"
+        ;;
+        r) rev="${OPTARG}"
+        ;;
+        a) aln="${OPTARG}"
+        ;;
+        d) db="${OPTARG}"
+        ;;
+        c) custom="${OPTARG}"
         ;;
         h) usage
         exit
         ;;
-	s) cat /usr/bin/.EGS
-	exit
-	;;
-        \?) echo 
+        s) cat /usr/bin/.EGS
+        exit
+        ;;
+        \?) echo
         echo "Invalid Option"
         usage
         exit
@@ -36,27 +57,37 @@ while getopts ":q:d:h s" opt; do
         esac
 done
 
-if [ ! -d "$query" ]
-	then
-	echo "ERROR: No query supplied"
-	usage
-        exit
-        else [ ! -d "$db" ]
-        echo "Database name not supplied"
-        usage
-        exit
-fi
+mkdir -p "$db"/
 
+#search for query from gene region and organism inputs
 
-mkdir "$db"/
+### Feel free to tidy this up. I am not an indent hater, I am more of an indent pacifist.
 
-#search for query
+if [ ! $gene == "" ]
+then
+
+esearch -db nucleotide -query "$gene[All Fields] AND $org [Organism]"|
+efetch -format fasta \
+> fasta.tmp
+
+esearch -db nucleotide -query "$gene[All Fields] AND $org [Organism]" |
+efetch -format docsum |
+xtract -pattern DocumentSummary -element AccessionVersion \
+> "$db"/"$db"acc.txt
+
+esearch -db nucleotide -query "$gene[All Fields] AND $org [Organism]" |
+efetch -format docsum |
+xtract -pattern DocumentSummary -element TaxId \
+> "$db"/"$db"taxid.txt
+
+else
+#search for query using NCBI's syntax
 
 esearch -db nucleotide -query "$query" |
 efetch -format fasta \
-> "$db"/"$db".fasta
+> fasta.tmp
 
-esearch -db nucleotide -query "$query" | 
+esearch -db nucleotide -query "$query" |
 efetch -format docsum |
 xtract -pattern DocumentSummary -element AccessionVersion \
 > "$db"/"$db"acc.txt
@@ -66,11 +97,41 @@ efetch -format docsum |
 xtract -pattern DocumentSummary -element TaxId \
 > "$db"/"$db"taxid.txt
 
-#remove suffixes
-awk '{print $1}' "$db".fasta
+### Do we need another else function here in case the user doesn't add any options that are required?
+### Would be like "else echo ERROR: No valid search query provided"?
+fi
 
-#Combind Files
+#remove suffixes
+awk '{print $1}' fasta.tmp > "$db"/"$db".fasta
+
+# Check for primer and trim primers and flanking sequences from downloaded fasta file, leaving only sequences containing the target marker.
+### This assumes the user doesn't have primer sequences in their custom sequences if they added them. We can either add in an interactive line of code that asks the user if
+### this is the case, where the appropriate code will be run accordingly. Otherwise, we can provide the cutadapt code in the manual and instruct the user to run it on their
+### custom fasta file BEFORE running the eggdb command. I just don't want to include custom sequences by default due to the inconsistency of having/not having primers still there.
+if [ ! $fwd == "" ]
+then
+
+# Reverse complement reverse primer
+revc=$(echo "$rev" | tr 'ATCG' 'TAGC' | rev)
+
+# Perform in silico PCR, trimming primers concurrently
+for i in "$db"/"$db".fasta; do cutadapt -a $fwd...$revc -O $aln --trimmed-only --action trim -j 0 -o $i.out $i; done
+
+mv "$db"/"$db".fasta.out "$db"/"$db".fasta
+fi
+
+#Combine Files
 paste "$db"/"$db"acc.txt "$db"/"$db"taxid.txt > "$db"/"$db"taxmap.txt
+
+if [ ! $custom == "" ]
+then
+sed -n '1~2p' $custom | sed 's/>//g;s/_/ /g' | taxonkit name2taxid | sed 's/ /_/g' >taxa.tmp
+cat "$db"/"$db".fasta $custom >fasta.tmp
+mv fasta.tmp "$db"/"$db".fasta
+cat "$db"/"$db"taxmap.txt taxa.tmp >taxmap.tmp
+mv taxmap.tmp "$db"/"$db"taxmap.txt
+rm taxa.tmp
+fi
 
 #Make Blast DB
 makeblastdb -in "$db"/"$db".fasta -parse_seqids -taxid_map "$db"/"$db"taxmap.txt -title "$db" -dbtype nucl -out "$db"/"$db"
@@ -79,6 +140,8 @@ makeblastdb -in "$db"/"$db".fasta -parse_seqids -taxid_map "$db"/"$db"taxmap.txt
 rm "$db"/"$db"acc.txt "$db"/"$db"taxid.txt
 
 #Export Path
+### I had a small issue here due to the annoying path for my working directory including spaces, despite including forward slashes (OneDrive\ -\ The\ University\ of\ Melbourne). 
+### Will need to ensure this works for paths with spaces somehow. 
 cwd=$(pwd)
 export BLASTDB="$cwd"/"$db" >& /dev/null || setenv BLASTDB "${BLASTDB}:"$cwd"/"$db""
 
@@ -86,15 +149,15 @@ echo
 echo "***IMPORTANT***"
 echo "To use your blast db after this terminal session you must run <export BLASTDB="$cwd"/"$db"> at the start of each session"
 echo "This can also be added to your .bashrc"
-	read -p "Export path to .bashrc ? (Y/N) "
-	echo 
-	if [[ $REPLY =~ ^[Yy]$ ]]
-	then
-	export export BLASTDB="$cwd"/"$db" >& /dev/null
-	echo "export BLASTDB="$cwd"/"$db"" >> $HOME/.bashrc
-	echo "Please restart the terminal"
-	elif [[ $REPLY =~ ^[Nn]$ ]]; then
-		echo "Please remember to add this to before running blastn each session"
-	fi
+        read -p "Export path to .bashrc ? (Y/N) "
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+        export export BLASTDB="$cwd"/"$db" >& /dev/null
+        echo "export BLASTDB="$cwd"/"$db"" >> $HOME/.bashrc
+        echo "Please restart the terminal"
+        elif [[ $REPLY =~ ^[Nn]$ ]]; then
+                echo "Please remember to add this to before running blastn each session"
+        fi
 
 echo "Finished"
