@@ -129,6 +129,35 @@ tar -xf EGgPLantV*.tar.xz
 		echo "Installed"
 		echo
 	fi
+	echo "taxonkit"
+    which taxonkit &> /dev/null  
+    if [ $? -ne 0 ]
+        then
+        echo "Not installed"  
+        wget https://github.com/shenwei356/taxonkit/releases/download/v0.18.0/taxonkit_linux_amd64.tar.gz
+		tar -zxvf *.tar.gz
+		if [ ! -d "$HOME/bin" ]
+			then
+			echo "Personal Library not found"
+			read -p "Would you like to create a personal library ‘~$HOME/bin’  (Y/N)"
+			echo    # (optional) move to a new line 
+			if [[ $REPLY =~ ^[Yy]$ ]]
+				then
+				mkdir -p ~$HOME/bin
+				cp taxonkit $HOME/bin
+				export PATH=$PATH:$HOME/bin
+				echo "please add 'export PATH=$PATH:$HOME/bin' to your .profile/.bachrc"
+			else
+				echo "Please add path/to/taxonkit to your PATH"
+			fi
+		else echo "Personal library Found"
+			cp taxonkit $HOME/bin
+			echo
+		fi   	
+    else
+        echo    "Installed"
+	fi
+fi
 	
 	echo "R Personal lib"
 	plib="~/R/x86_64-pc-linux-gnu-library/4.0"
@@ -242,8 +271,8 @@ elif [[ "$(uname)" == "Darwin" ]];
            	else
         	echo    "Installed"
 	fi
-	echo "gcut"
-     	which gcut &> /dev/null  
+	echo "taxonkit"
+     	which taxonkit &> /dev/null  
     	if [ $? -ne 0 ]
         	then
             	echo "Not installed"  
@@ -253,7 +282,7 @@ elif [[ "$(uname)" == "Darwin" ]];
 			echo "Installing Homebrew (Required to install packages)"
 			-c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
            	fi
-           	brew install coreutils          	
+           	brew install brewsci/bio/taxonkit          	
            	else
         	echo    "Installed"
 	fi

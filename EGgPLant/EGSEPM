@@ -47,7 +47,7 @@ out <- filterAndTrim(fwd=file.path(pathF, fastqFs), filt=file.path(filtpathF, fa
 head(out)
 
 filtFs <- list.files(filtpathF, pattern="fastq.gz", full.names = TRUE)
-sample.names <- sapply(strsplit(basename(filtFs), "_"), `[`, 1)
+sample.names <- sub("_R1_001\\.fastq\\.gz$", "", basename(filtFs))
 names(filtFs) <- sample.names
 
 cat("Learning Error Rates\n")

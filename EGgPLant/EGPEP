@@ -2,7 +2,7 @@
 #EGgPLant Paired End Reads - V1.0 - Linux OS
 cat("EGgPLant for Paired End Reads\n")
 .libPaths("~/R/x86_64-pc-linux-gnu-library/4.0/")
-Sys.setenv(R_INSTALL_STAGED = FALSE) 
+Sys.setenv(R_INSTALL_STAGED = FALSE)
 
 cat("Setting Repository\n")
 r = getOption("repos") 
@@ -54,8 +54,8 @@ head(out)
 
 filtFs <- list.files(filtpathF, pattern="fastq.gz", full.names = TRUE)
 filtRs <- list.files(filtpathR, pattern="fastq.gz", full.names = TRUE)
-sample.names <- sapply(strsplit(basename(filtFs), "_"), `[`, 1) # Assumes filename = samplename_XXX.fastq.gz
-sample.namesR <- sapply(strsplit(basename(filtRs), "_"), `[`, 1) # Assumes filename = samplename_XXX.fastq.gz
+sample.names <- sub("_R1_001\\.fastq\\.gz$", "", basename(filtFs))
+sample.namesR <- sub("_R1_001\\.fastq\\.gz$", "", basename(filtRs))
 names(filtFs) <- sample.names
 names(filtRs) <- sample.names
 
