@@ -258,5 +258,5 @@ elif [[ "$(uname)" == "Darwin" ]];
         	echo    "Installed"
 	fi
 fi
-echo "EGgPLant and all dependacies are now installed"
-echo "Please read the readme (EGPL_README.txt) found in "$cwd" before use"
+echo "EGgPLant and all dependencies are now installed"
+echo "Please read the readme (EGgPLant_README.txt) found in "$cwd" before use"
