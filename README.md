@@ -1,4 +1,4 @@
-# EGgPLant [![Static Badge](https://img.shields.io/badge/version-V1.0-blue)](https://github.com/mrellis96/EGgPLant/releases/tag/V1.0) [![DOI](https://zenodo.org/badge/360321933.svg)](https://doi.org/10.5281/zenodo.14183828) <img src="eggplantlogo.png" align="right" height="150"/></a>
+# EGgPLant [![Static Badge](https://img.shields.io/badge/version-V1.0.1-blue)](https://github.com/mrellis96/EGgPLant/releases/tag/V1.0) [![DOI](https://zenodo.org/badge/360321933.svg)](https://doi.org/10.5281/zenodo.14183828) <img src="eggplantlogo.png" align="right" height="150"/></a>
 ### An end-to-end metabarcoding pipeline by ecologists, for ecologists.  
 
 
@@ -101,7 +101,8 @@ V0.4.1.1: Name Changed to EGgPLant.
 V0.4.1.2: Bug Fixes.  
 V0.4.2: Changed install script to install to a local dir. not /usr/bin, Added LCA script, renamed EGPL to eggplant.  
 V0.5.0: Intergrated blast and LCA script in to main eggplant pipeline, depreciated EGIP, improved speed through awk handling.  
-V1.0: Set public release
+V1.0: Set public release. 
+V1.0.1: Updated eggdb to handle more types of query, changed R's handling of sample names, added taxonkit as dependency 
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **DISCLAIMER**: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arise from running this script or pipeline. Please use at own risk.
