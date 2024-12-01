@@ -22,7 +22,7 @@ VSearch
 **Installation**:
 
 Download the tarball (EGgPLant_VXX.tar.gz) and the install script install.eggplant.sh (Click on the relase on the right handside to find the downlaods)
-run `bash install.eggplant.sh` in the same directory as the EGgPLant tarball. The install script will now install all the necessary programs and move the EGgPLant script to /usr/bin/ (/usr/local/bin/ on mac)
+run `bash install.eggplant.sh` in the same directory as the EGgPLant tarball. The install script will now install all the necessary programs and move the EGgPLant script to /usr/bin/ (/usr/local/bin/ on mac).  
 The latest stable vesion is available under 'Releases'.
 
 Manual install:  
