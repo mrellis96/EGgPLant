@@ -23,6 +23,7 @@ VSearch
 
 Download the tarball (EGgPLant_VXX.tar.gz) and the install script install.eggplant.sh (Click on the relase on the right handside to find the downlaods)
 run `bash install.eggplant.sh` in the same directory as the EGgPLant tarball. The install script will now install all the necessary programs and move the EGgPLant script to /usr/bin/ (/usr/local/bin/ on mac)
+The latest stable vesion is available under 'Releases'.
 
 Manual install:  
 1) Extract files  
@@ -101,7 +102,7 @@ V0.4.1.1: Name Changed to EGgPLant.
 V0.4.1.2: Bug Fixes.  
 V0.4.2: Changed install script to install to a local dir. not /usr/bin, Added LCA script, renamed EGPL to eggplant.  
 V0.5.0: Intergrated blast and LCA script in to main eggplant pipeline, depreciated EGIP, improved speed through awk handling.  
-V1.0: Set public release. 
+V1.0: Set public release.  
 V1.0.1: Updated eggdb to handle more types of query, changed R's handling of sample names, added taxonkit as dependency 
 
 -------------------------------------------------------------------------------------------------------------------------------------------
