@@ -83,7 +83,7 @@ table(nchar(getSequences(seqtab)))
 
 cat("Chimera Removal\n")
 
-seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=FALSE, verbose=TRUE)
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 
 cat("Number of Samples and ASVs Remaining\n")
 
