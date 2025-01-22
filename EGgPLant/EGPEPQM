@@ -25,14 +25,14 @@ cat("Generating Quality Plots\n")
 QplotF <- sort(list.files(pathF, pattern="fastq.gz", full.names = TRUE))
 QplotR <- sort(list.files(pathR, pattern="fastq.gz", full.names = TRUE))
 
-cat("If you get two messages below saying "null device 1", success!\nCheck the outputs directory for the quality plots.\n")
+cat("Depending on the number of samples you have, this may take some time. Take a brain break!\n")
 
 tiff('outputs/qPlot_fwd.tiff', units="in", width=8, height=6, res=600, compression = 'lzw',type='cairo')
 plotQualityProfile(QplotF, aggregate = TRUE)
-dev.off()
+garbage <- dev.off()
 
 tiff('outputs/qPlot_rev.tiff', units="in", width=8, height=6, res=600, compression = 'lzw',type='cairo')
 plotQualityProfile(QplotR, aggregate = TRUE)
-dev.off()
+garbage <- dev.off()
 
 cat("Finished\n")
