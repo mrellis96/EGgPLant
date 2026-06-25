@@ -1,5 +1,5 @@
 #!/bin/bash
-#EGgPLant install Scrip V1.0
+#EGgPLant install Scrip V1.0.1
 echo "Thank you for choosing EGgPLant"
 echo "The pipeline will now be installed including all dependencies such as R, Vim, NCBI-Blast etc."
 echo "On macOS this will also download and install homebrew, which will be used to insall dependencies" 
