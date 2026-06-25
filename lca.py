@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# EGgPLant Lowest Common Ancestor Script - V1.0.1
+# EGgPLant Lowest Common Ancestor Script - V1.2
 import os
 import sys
 import time

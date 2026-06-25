@@ -1,8 +1,8 @@
 #!/usr/bin/Rscript
-#EGgPLant Paired End Reads - V1.0 - Linux OS
+#EGgPLant for Paired End Reads - V1.0.1 - Linux OS
 cat("EGgPLant for Paired End Reads\n")
 .libPaths("~/R/x86_64-pc-linux-gnu-library/4.0/")
-Sys.setenv(R_INSTALL_STAGED = FALSE) 
+Sys.setenv(R_INSTALL_STAGED = FALSE)
 
 cat("Setting Repository\n")
 r = getOption("repos") 
@@ -28,10 +28,8 @@ opt$y<-as.numeric(opt$revT)
 if(!("latticeExtra" %in% list.files(.libPaths()))) install.packages("latticeExtra")
 if(!("devtools" %in% list.files(.libPaths()))) install.packages("devtools")
 library(devtools)
-if(!("insect" %in% list.files(.libPaths()))) devtools::install_github("shaunpwilkinson/insect")
 if(!("BiocManager" %in% list.files(.libPaths()))) install.packages("BiocManager")
 if(!("dada2" %in% list.files(.libPaths()))) BiocManager::install("dada2")
-library(insect)
 library(dada2)
 
 cat("Assigning Pathways\n")
@@ -48,14 +46,13 @@ fastqRs <- sort(list.files(pathR, pattern="fastq.gz"))
 
 cat("Trimming and Filtering Sequences\n")
 
-out <- filterAndTrim(fwd=file.path(pathF, fastqFs), filt=file.path(filtpathF, fastqFs), rev=file.path(pathR, fastqRs), filt.rev=file.path(filtpathR, fastqRs), truncLen=c(opt$t,opt$y), maxEE=c(2,5), truncQ=2, maxN=0, rm.phix=TRUE, compress=TRUE, verbose=TRUE, multithread=FALSE)
-
+out <- filterAndTrim(fwd=file.path(pathF, fastqFs), filt=file.path(filtpathF, fastqFs), rev=file.path(pathR, fastqRs), filt.rev=file.path(filtpathR, fastqRs), truncLen=c(opt$t,opt$y), maxEE=c(2,5), truncQ=2, maxN=0, rm.phix=TRUE, compress=TRUE, verbose=TRUE, multithread=TRUE)
 head(out)
 
 filtFs <- list.files(filtpathF, pattern="fastq.gz", full.names = TRUE)
 filtRs <- list.files(filtpathR, pattern="fastq.gz", full.names = TRUE)
-sample.names <- sapply(strsplit(basename(filtFs), "_"), `[`, 1) # Assumes filename = samplename_XXX.fastq.gz
-sample.namesR <- sapply(strsplit(basename(filtRs), "_"), `[`, 1) # Assumes filename = samplename_XXX.fastq.gz
+sample.names <- sub("_R1_001\\.fastq\\.gz$", "", basename(filtFs))
+sample.namesR <- sub("_R1_001\\.fastq\\.gz$", "", basename(filtRs))
 names(filtFs) <- sample.names
 names(filtRs) <- sample.names
 
@@ -87,7 +84,7 @@ table(nchar(getSequences(seqtab)))
 
 cat("Chimera Removal\n")
 
-seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=FALSE, verbose=TRUE)
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 
 cat("Number of Samples and ASVs Remaining\n")
 

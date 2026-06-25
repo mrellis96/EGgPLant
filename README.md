@@ -1,33 +1,6 @@
-# EGgPLant [![Static Badge](https://img.shields.io/badge/version-V1.0-blue)](https://github.com/mrellis96/EGgPLant/releases/tag/V1.0) [![DOI](https://zenodo.org/badge/360321933.svg)](https://doi.org/10.5281/zenodo.14183828)
+# EGgPLant [![Static Badge](https://img.shields.io/badge/version-V1.0.1-blue)](https://github.com/mrellis96/EGgPLant/releases/tag/V1.0) [![DOI](https://zenodo.org/badge/360321933.svg)](https://doi.org/10.5281/zenodo.14183828) <img src="eggplantlogo.png" align="right" height="150"/></a>
 ### An end-to-end metabarcoding pipeline by ecologists, for ecologists.  
 
-<pre>
-            _______________________________
-           /_______________________________\
-          //                               \\
-         //                         ▒▒      \\
-        //                          ▒▒       \\
-       //                         ▒▒          \\
-      //                      ░░░░▒▒░░         \\
-     //                     ░░░░░░░░░░          \\
-    //                      ░░░░░░░░░░           \\
-   //                       ▒▒░░░░░░░░░           \\
-  //                      ▒▒▒▒▒▒▒▒░░▒▒░░           \\
- //                      ▒▒▒▒▒▒▒▒▒▒▒▒▒              \\
-//                      ▒▒▒▒▒▒▒▒▒▒▒▒                 \\
-\\                      ▒▒▒▒▒▒▒▒▒▒▒▒                 //
- \\                   ▒▒▒▒▒▒▒▒▒▒▒▒▒▒                //
-  \\                  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒               //
-   \\               ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒              //
-    \\            ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒               //
-     \\           ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒              //
-      \\          ▒▒▒▒▒▒▒▒▒▒▒▒▒▒               //
-       \\         ▒▒▒▒▒▒▒▒▒▒▒▒▒▒              //
-        \\        ▒▒▒▒▒▒▒▒▒▒▒▒               //
-         \\         ▒▒▒▒▒▒▒▒                //
-          \\_______________________________//
-           \_______________________________/
-</pre>
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 EGgPLant has been developed by Morgan Ellis and Owen Holland.  
@@ -49,7 +22,8 @@ VSearch
 **Installation**:
 
 Download the tarball (EGgPLant_VXX.tar.gz) and the install script install.eggplant.sh (Click on the relase on the right handside to find the downlaods)
-run `bash install.eggplant.sh` in the same directory as the EGgPLant tarball. The install script will now install all the necessary programs and move the EGgPLant script to /usr/bin/ (/usr/local/bin/ on mac)
+run `bash install.eggplant.sh` in the same directory as the EGgPLant tarball. The install script will now install all the necessary programs and move the EGgPLant script to /usr/bin/ (/usr/local/bin/ on mac).  
+The latest stable vesion is available under 'Releases'.
 
 Manual install:  
 1) Extract files  
@@ -81,8 +55,8 @@ eggplant - Main Pipeline:
        -y: IF PAIRED END, where you would like filterAndTrim to truncate the reverse reads (Default=No Truncation).  
        -n: Remove reads with length less than [n] BP (Default = 20).  
        -m: Minimum number of reads per sequences allowed after chimera removal (Default = 10).  
-       -b: Blast Database - Database to BLAST output sequences against. Must be BLASTn formatted database (see EGDB)  
-       -v: Taxonomic Map - Path to taxonomic mapping file for Blast Database to pass to LCA script  
+       -b: Blast Database - Database to BLAST output sequences against. Must be BLASTn formatted database (see EGDB)  
+       -v: Taxonomic Map - Path to taxonomic mapping file for Blast Database to pass to LCA script   
        -o: Cluster ASV in to OTU. ASVs will be clustered in to OTUs based on the similarity value (0-1) (Default = No Clustering).  
 
 4) Check number of reads after each step in the terminal for optimising these variables.
@@ -128,7 +102,8 @@ V0.4.1.1: Name Changed to EGgPLant.
 V0.4.1.2: Bug Fixes.  
 V0.4.2: Changed install script to install to a local dir. not /usr/bin, Added LCA script, renamed EGPL to eggplant.  
 V0.5.0: Intergrated blast and LCA script in to main eggplant pipeline, depreciated EGIP, improved speed through awk handling.  
-V1.0: Set public release
+V1.0: Set public release.  
+V1.0.1: Updated eggdb to handle more types of query, changed R's handling of sample names, added taxonkit as dependency. Improved LCA script with cascading logic when asigning taxa 
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 **DISCLAIMER**: While all effort was taken to ensure this script is free from errors, Morgan Ellis, Owen Holland and the EcoGenetics Lab take no responsibility to any Damage, corruption or issue that may arise from running this script or pipeline. Please use at own risk.
